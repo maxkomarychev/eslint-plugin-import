@@ -101,8 +101,10 @@ const resolveFiles = (src, ignoreExports, context) => {
  * parse all source files and build up 2 maps containing the existing imports and exports
  */
 const prepareImportsAndExports = (srcFiles, context) => {
+  // console.log('src files?', srcFiles)
   const exportAll = new Map()
   srcFiles.forEach(file => {
+    // console.log('file!', file)
     const exports = new Map()
     const imports = new Map()
     const currentExports = Exports.get(file, context)

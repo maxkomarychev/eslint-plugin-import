@@ -6,7 +6,7 @@ import debug from 'debug'
 
 import { SourceCode } from 'eslint'
 
-import parse from 'eslint-module-utils/parse'
+import parse, { visit } from 'eslint-module-utils/parse'
 import resolve from 'eslint-module-utils/resolve'
 import isIgnored, { hasValidExtension } from 'eslint-module-utils/ignore'
 
@@ -282,7 +282,10 @@ function captureTomDoc(comments) {
 
 ExportMap.get = function (source, context) {
   const path = resolve(source, context)
-  if (path == null) return null
+  if (path == null) {
+    console.log("wut?")
+    return null
+  }
 
   return ExportMap.for(childContext(path, context))
 }
@@ -340,13 +343,25 @@ ExportMap.for = function (context) {
 }
 
 
+// function traverse(ast) {
+
+// }
+
 ExportMap.parse = function (path, content, context) {
   var m = new ExportMap(path)
 
   try {
+    console.log('path', path)
     var ast = parse(path, content, context)
+    visit(ast, path, context, {
+        "CallExpression": function (node) {
+        // console.log('call', node.callee.type)
+        console.log('node.type???', node.type, node.callee.type)
+      }
+    }
+    )
   } catch (err) {
-    log('parse error:', path, err)
+    console.log('parse error:', path, err)
     m.errors.push(err)
     return m // can't continue
   }
