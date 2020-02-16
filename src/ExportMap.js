@@ -364,10 +364,12 @@ ExportMap.parse = function(path, content, context) {
     return m // can't continue
   }
 
+  // is this reasonable performance wise?
   let hasDynamicImports = false
   visit(ast, path, context, {
     CallExpression(node) {
       log('CALL', node.callee.type)
+      // log(JSON.stringify(node))
       if (node.callee.type === 'Import') {
         hasDynamicImports = true
       }
