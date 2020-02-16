@@ -357,13 +357,17 @@ ExportMap.parse = function(path, content, context) {
 
   try {
     var ast = parse(path, content, context)
+    log('parser', path)
   } catch (err) {
     log('parse error:', path, err)
     m.errors.push(err)
     return m // can't continue
   }
 
-  if (!unambiguous.isModule(ast)) return null
+  if (!unambiguous.isModule(ast)) {
+    log('is not a module', path)
+    return null
+  }
 
   const docstyle = (context.settings &&
     context.settings['import/docstyle']) || ['jsdoc']
