@@ -36,7 +36,9 @@ export default class ExportMap {
     this.errors = []
   }
 
-  get hasDefault() { return this.get('default') != null } // stronger than this.has
+  get hasDefault() {
+    return this.get('default') != null
+  } // stronger than this.has
 
   get size() {
     let size = this.namespace.size + this.reexports.size
@@ -84,8 +86,8 @@ export default class ExportMap {
     if (this.namespace.has(name)) return { found: true, path: [this] }
 
     if (this.reexports.has(name)) {
-      const reexports = this.reexports.get(name)
-          , imported = reexports.getImport()
+      const reexports = this.reexports.get(name),
+        imported = reexports.getImport()
 
       // if import is ignored, return explicit 'null'
       if (imported == null) return { found: true, path: [this] }
@@ -100,7 +102,6 @@ export default class ExportMap {
 
       return deep
     }
-
 
     // default exports must be explicitly re-exported (#328)
     if (name !== 'default') {
@@ -128,14 +129,15 @@ export default class ExportMap {
     if (this.namespace.has(name)) return this.namespace.get(name)
 
     if (this.reexports.has(name)) {
-      const reexports = this.reexports.get(name)
-          , imported = reexports.getImport()
+      const reexports = this.reexports.get(name),
+        imported = reexports.getImport()
 
       // if import is ignored, return explicit 'null'
       if (imported == null) return null
 
       // safeguard against cycles, only if name matches
-      if (imported.path === this.path && reexports.local === name) return undefined
+      if (imported.path === this.path && reexports.local === name)
+        {return undefined}
 
       return imported.get(reexports.local)
     }
@@ -159,13 +161,17 @@ export default class ExportMap {
   }
 
   forEach(callback, thisArg) {
-    this.namespace.forEach((v, n) =>
-      callback.call(thisArg, v, n, this))
+    this.namespace.forEach((v, n) => callback.call(thisArg, v, n, this))
 
     this.reexports.forEach((reexports, name) => {
       const reexported = reexports.getImport()
       // can't look up meta for ignored re-exports (#348)
-      callback.call(thisArg, reexported && reexported.get(reexports.local), name, this)
+      callback.call(
+        thisArg,
+        reexported && reexported.get(reexports.local),
+        name,
+        this
+      )
     })
 
     this.dependencies.forEach(dep => {
@@ -173,8 +179,9 @@ export default class ExportMap {
       // CJS / ignored dependencies won't exist (#717)
       if (d == null) return
 
-      d.forEach((v, n) =>
-        n !== 'default' && callback.call(thisArg, v, n, this))
+      d.forEach(
+        (v, n) => n !== 'default' && callback.call(thisArg, v, n, this)
+      )
     })
   }
 
@@ -183,10 +190,11 @@ export default class ExportMap {
   reportErrors(context, declaration) {
     context.report({
       node: declaration.source,
-      message: `Parse errors in imported module '${declaration.source.value}': ` +
-                  `${this.errors
-                        .map(e => `${e.message} (${e.lineNumber}:${e.column})`)
-                        .join(', ')}`,
+      message:
+        `Parse errors in imported module '${declaration.source.value}': ` +
+        `${this.errors
+          .map(e => `${e.message} (${e.lineNumber}:${e.column})`)
+          .join(', ')}`,
     })
   }
 }
@@ -200,7 +208,6 @@ function captureDoc(source, docStyleParsers, ...nodes) {
   // 'some' short-circuits on first 'true'
   nodes.some(n => {
     try {
-
       let leadingComments
 
       // n.leadingComments is legacy `attachComments` behavior
@@ -256,8 +263,8 @@ function captureJsDoc(comments) {
 }
 
 /**
-  * parse TomDoc section from comments
-  */
+ * parse TomDoc section from comments
+ */
 function captureTomDoc(comments) {
   // collect lines up to first paragraph break
   const lines = []
@@ -268,26 +275,30 @@ function captureTomDoc(comments) {
   }
 
   // return doctrine-like object
-  const statusMatch = lines.join(' ').match(/^(Public|Internal|Deprecated):\s*(.+)/)
+  const statusMatch = lines
+    .join(' ')
+    .match(/^(Public|Internal|Deprecated):\s*(.+)/)
   if (statusMatch) {
     return {
       description: statusMatch[2],
-      tags: [{
-        title: statusMatch[1].toLowerCase(),
-        description: statusMatch[2],
-      }],
+      tags: [
+        {
+          title: statusMatch[1].toLowerCase(),
+          description: statusMatch[2],
+        },
+      ],
     }
   }
 }
 
-ExportMap.get = function (source, context) {
+ExportMap.get = function(source, context) {
   const path = resolve(source, context)
   if (path == null) return null
 
   return ExportMap.for(childContext(path, context))
 }
 
-ExportMap.for = function (context) {
+ExportMap.for = function(context) {
   const { path } = context
 
   const cacheKey = hashObject(context).digest('hex')
@@ -322,7 +333,8 @@ ExportMap.for = function (context) {
 
   // check for and cache unambiguous modules
   if (!unambiguous.test(content)) {
-    log('ignored path due to unambiguous regex:', path)
+    console.log('ignored path due to unambiguous regex:', path)
+    // log('ignored path due to unambiguous regex:', path)
     exportCache.set(cacheKey, null)
     return null
   }
@@ -339,8 +351,7 @@ ExportMap.for = function (context) {
   return exportMap
 }
 
-
-ExportMap.parse = function (path, content, context) {
+ExportMap.parse = function(path, content, context) {
   var m = new ExportMap(path)
 
   try {
@@ -353,7 +364,8 @@ ExportMap.parse = function (path, content, context) {
 
   if (!unambiguous.isModule(ast)) return null
 
-  const docstyle = (context.settings && context.settings['import/docstyle']) || ['jsdoc']
+  const docstyle = (context.settings &&
+    context.settings['import/docstyle']) || ['jsdoc']
   const docStyleParsers = {}
   docstyle.forEach(style => {
     docStyleParsers[style] = availableDocStyleParsers[style]
@@ -369,7 +381,9 @@ ExportMap.parse = function (path, content, context) {
           m.doc = doc
           return true
         }
-      } catch (err) { /* ignore */ }
+      } catch (err) {
+        /* ignore */
+      }
       return false
     })
   }
@@ -389,7 +403,7 @@ ExportMap.parse = function (path, content, context) {
   function getNamespace(identifier) {
     if (!namespaces.has(identifier.name)) return
 
-    return function () {
+    return function() {
       return resolveImport(namespaces.get(identifier.name))
     }
   }
@@ -407,7 +421,10 @@ ExportMap.parse = function (path, content, context) {
     if (declaration.source == null) return null
     if (declaration.importKind === 'type') return null // skip Flow type imports
     const importedSpecifiers = new Set()
-    const supportedTypes = new Set(['ImportDefaultSpecifier', 'ImportNamespaceSpecifier'])
+    const supportedTypes = new Set([
+      'ImportDefaultSpecifier',
+      'ImportNamespaceSpecifier',
+    ])
     let hasImportedType = false
     if (declaration.specifiers) {
       declaration.specifiers.forEach(specifier => {
@@ -434,7 +451,8 @@ ExportMap.parse = function (path, content, context) {
     const getter = thunkFor(p, context)
     m.imports.set(p, {
       getter,
-      source: {  // capturing actual node reference holds full AST in memory!
+      source: {
+        // capturing actual node reference holds full AST in memory!
         value: declaration.source.value,
         loc: declaration.source.loc,
       },
@@ -445,8 +463,7 @@ ExportMap.parse = function (path, content, context) {
 
   const source = makeSourceCode(content, ast)
 
-  ast.body.forEach(function (n) {
-
+  ast.body.forEach(function(n) {
     if (n.type === 'ExportDefaultDeclaration') {
       const exportMeta = captureDoc(source, docStyleParsers, n)
       if (n.declaration.type === 'Identifier') {
@@ -466,7 +483,11 @@ ExportMap.parse = function (path, content, context) {
     if (n.type === 'ImportDeclaration') {
       captureDependency(n)
       let ns
-      if (n.specifiers.some(s => s.type === 'ImportNamespaceSpecifier' && (ns = s))) {
+      if (
+        n.specifiers.some(
+          s => s.type === 'ImportNamespaceSpecifier' && (ns = s)
+        )
+      ) {
         namespaces.set(ns.local.name, n.source.value)
       }
       return
@@ -487,18 +508,26 @@ ExportMap.parse = function (path, content, context) {
           case 'TSInterfaceDeclaration':
           case 'TSAbstractClassDeclaration':
           case 'TSModuleDeclaration':
-            m.namespace.set(n.declaration.id.name, captureDoc(source, docStyleParsers, n))
+            m.namespace.set(
+              n.declaration.id.name,
+              captureDoc(source, docStyleParsers, n)
+            )
             break
           case 'VariableDeclaration':
-            n.declaration.declarations.forEach((d) =>
-              recursivePatternCapture(d.id,
-                id => m.namespace.set(id.name, captureDoc(source, docStyleParsers, d, n))))
+            n.declaration.declarations.forEach(d =>
+              recursivePatternCapture(d.id, id =>
+                m.namespace.set(
+                  id.name,
+                  captureDoc(source, docStyleParsers, d, n)
+                )
+              )
+            )
             break
         }
       }
 
       const nsource = n.source && n.source.value
-      n.specifiers.forEach((s) => {
+      n.specifiers.forEach(s => {
         const exportMeta = {}
         let local
 
@@ -508,50 +537,73 @@ ExportMap.parse = function (path, content, context) {
             local = 'default'
             break
           case 'ExportNamespaceSpecifier':
-            m.namespace.set(s.exported.name, Object.defineProperty(exportMeta, 'namespace', {
-              get() { return resolveImport(nsource) },
-            }))
+            m.namespace.set(
+              s.exported.name,
+              Object.defineProperty(exportMeta, 'namespace', {
+                get() {
+                  return resolveImport(nsource)
+                },
+              })
+            )
             return
           case 'ExportSpecifier':
             if (!n.source) {
-              m.namespace.set(s.exported.name, addNamespace(exportMeta, s.local))
+              m.namespace.set(
+                s.exported.name,
+                addNamespace(exportMeta, s.local)
+              )
               return
             }
-            // else falls through
+          // else falls through
           default:
             local = s.local.name
             break
         }
 
         // todo: JSDoc
-        m.reexports.set(s.exported.name, { local, getImport: () => resolveImport(nsource) })
+        m.reexports.set(s.exported.name, {
+          local,
+          getImport: () => resolveImport(nsource),
+        })
       })
     }
 
     // This doesn't declare anything, but changes what's being exported.
     if (n.type === 'TSExportAssignment') {
-      const moduleDecls = ast.body.filter((bodyNode) =>
-        bodyNode.type === 'TSModuleDeclaration' && bodyNode.id.name === n.expression.name
+      const moduleDecls = ast.body.filter(
+        bodyNode =>
+          bodyNode.type === 'TSModuleDeclaration' &&
+          bodyNode.id.name === n.expression.name
       )
-      moduleDecls.forEach((moduleDecl) => {
+      moduleDecls.forEach(moduleDecl => {
         if (moduleDecl && moduleDecl.body && moduleDecl.body.body) {
-          moduleDecl.body.body.forEach((moduleBlockNode) => {
+          moduleDecl.body.body.forEach(moduleBlockNode => {
             // Export-assignment exports all members in the namespace, explicitly exported or not.
-            const exportedDecl = moduleBlockNode.type === 'ExportNamedDeclaration' ?
-              moduleBlockNode.declaration :
-              moduleBlockNode
+            const exportedDecl =
+              moduleBlockNode.type === 'ExportNamedDeclaration'
+                ? moduleBlockNode.declaration
+                : moduleBlockNode
 
             if (exportedDecl.type === 'VariableDeclaration') {
-              exportedDecl.declarations.forEach((decl) =>
-                recursivePatternCapture(decl.id,(id) => m.namespace.set(
-                  id.name,
-                  captureDoc(source, docStyleParsers, decl, exportedDecl, moduleBlockNode))
+              exportedDecl.declarations.forEach(decl =>
+                recursivePatternCapture(decl.id, id =>
+                  m.namespace.set(
+                    id.name,
+                    captureDoc(
+                      source,
+                      docStyleParsers,
+                      decl,
+                      exportedDecl,
+                      moduleBlockNode
+                    )
+                  )
                 )
               )
             } else {
               m.namespace.set(
                 exportedDecl.id.name,
-                captureDoc(source, docStyleParsers, moduleBlockNode))
+                captureDoc(source, docStyleParsers, moduleBlockNode)
+              )
             }
           })
         }
@@ -570,7 +622,6 @@ ExportMap.parse = function (path, content, context) {
 function thunkFor(p, context) {
   return () => ExportMap.for(childContext(p, context))
 }
-
 
 /**
  * Traverse a pattern/identifier node, calling 'callback'
@@ -592,7 +643,7 @@ export function recursivePatternCapture(pattern, callback) {
       break
 
     case 'ArrayPattern':
-      pattern.elements.forEach((element) => {
+      pattern.elements.forEach(element => {
         if (element == null) return
         recursivePatternCapture(element, callback)
       })
@@ -616,7 +667,6 @@ function childContext(path, context) {
     path,
   }
 }
-
 
 /**
  * sometimes legacy support isn't _that_ hard... right?
