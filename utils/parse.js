@@ -63,6 +63,70 @@ exports.default = function parse(path, content, context) {
   return parser.parse(content, parserOptions)
 }
 
+function __visit(node, keys, visitorSpec) {
+  if (!node) {
+    // console.log('no node!', node)
+    return
+  }
+  // try {
+    // console.log("VISIT 05")
+    // console.log('node type', node.type)
+    const type = node.type
+    // console.log('visiting', type)
+    if (typeof visitorSpec[type] === 'function') {
+      // console.log('has visitor!')
+      visitorSpec[type](node)
+    } else {
+      // console.log('no visitor!')
+    }
+    const childFields = keys[type]
+  if (!childFields) {
+      return
+    }
+    // console.log('child fields', childFields)
+    for (const fieldName of childFields) {
+      // console.log("fieldName", fieldName)
+      const field = node[fieldName]
+      // console.log("field", field)
+      if (Array.isArray(field)) {
+        for (const item of field) {
+          // console.log('item', item.type)
+          __visit(item, keys, visitorSpec)
+        }
+      } else {
+        __visit(field, keys, visitorSpec)
+      }
+    }
+    // console.log('children', keys[type])
+    // for (const childName of keys[type]) {
+    //   const child = node[childName]
+    //   console.log('child type', childName, typeof child, Array.isArray(child))
+    //   console.log("child", child)
+    //   if (Array.isArray(child)) {
+    //     for (const item of child) {
+    //       __visit(item, keys, visitorSpec)
+    //     }
+    //   } else {
+    //     __visit(node[childName][0], keys, visitorSpec)
+    //   }
+    // }
+  // } catch (error) {
+  //   console.log("WTF????", JSON.stringify(error))
+  // }
+}
+
+exports.visit = function (ast, path, context, visitorSpec) {
+  // console.log("VISIT 01")
+  const parserPath = getParserPath(path, context)
+  // console.log("VISIT 02")
+  const parser = moduleRequire(parserPath)
+  // console.log("VISIT 03", Object.keys(parser), Object.keys(parser).map(k => typeof k))
+  // const keys = parser.VisitorKeys
+  const keys = moduleRequire(parserPath.replace('index.js', 'visitor-keys.js'))
+  // console.log("VISIT 04", keys)
+  __visit(ast, keys, visitorSpec)
+}
+
 function getParserPath(path, context) {
   const parsers = context.settings['import/parsers']
   if (parsers != null) {
