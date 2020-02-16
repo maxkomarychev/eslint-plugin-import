@@ -6,7 +6,7 @@ import debug from 'debug'
 
 import { SourceCode } from 'eslint'
 
-import parse from 'eslint-module-utils/parse'
+import parse, { visit } from 'eslint-module-utils/parse'
 import resolve from 'eslint-module-utils/resolve'
 import isIgnored, { hasValidExtension } from 'eslint-module-utils/ignore'
 
@@ -364,9 +364,21 @@ ExportMap.parse = function(path, content, context) {
     return m // can't continue
   }
 
-  if (!unambiguous.isModule(ast)) {
-    log('is not a module', path)
+  let hasDynamicImports = false
+  visit(ast, path, context, {
+    CallExpression(node) {
+      log('CALL', node.callee.type)
+      if (node.callee.type === 'Import') {
+        hasDynamicImports = true
+      }
+    },
+  })
+
+  if (!unambiguous.isModule(ast) && !hasDynamicImports) {
+    log('is not a module', path, hasDynamicImports)
     return null
+  } else {
+    log('is a module!', path)
   }
 
   const docstyle = (context.settings &&
