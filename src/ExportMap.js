@@ -366,12 +366,65 @@ ExportMap.parse = function(path, content, context) {
 
   // is this reasonable performance wise?
   let hasDynamicImports = false
+
+  // const p = remotePath(declaration.source.value)
+  // if (p == null) return null
+  // const existing = m.imports.get(p)
+  // if (existing != null) return existing.getter
+
+  // const getter = thunkFor(p, context)
+  // m.imports.set(p, {
+  //   getter,
+  //   source: {
+  //     // capturing actual node reference holds full AST in memory!
+  //     value: declaration.source.value,
+  //     loc: declaration.source.loc,
+  //   },
+  //   importedSpecifiers,
+  // })
+
+
   visit(ast, path, context, {
     CallExpression(node) {
       log('CALL', node.callee.type)
       // log(JSON.stringify(node))
       if (node.callee.type === 'Import') {
         hasDynamicImports = true
+
+          // log('parsing', node)
+        try {
+        const p = remotePath(node.arguments[0].value)
+        // log('dynamic import path', p)
+        if (p == null) return null
+        // const existing = m.imports.get(p)
+          // if (existing != null) return existing.getter
+
+          // if (supportedTypes.has(specifier.type) && !isType) {
+          //   importedSpecifiers.add(specifier.type)
+          // }
+          // if (specifier.type === 'ImportSpecifier' && !isType) {
+          //   // log('capture', path, specifier.imported.name)
+          //   importedSpecifiers.add(specifier.imported.name)
+          // }
+
+          const importLiteral = node.arguments[0]
+
+        const importedSpecifiers = new Set()
+        importedSpecifiers.add('ImportDefaultSpecifier')
+        const getter = thunkFor(p, context)
+        m.imports.set(p, {
+          getter,
+          source: {
+            // capturing actual node reference holds full AST in memory!
+            value: importLiteral.value,
+            loc: importLiteral.loc,
+          },
+          importedSpecifiers,
+        })
+
+        } catch (e) {
+          log('ERRORRRRRR', e)
+        }
       }
     },
   })
@@ -454,10 +507,12 @@ ExportMap.parse = function(path, content, context) {
           importedSpecifiers.add(specifier.type)
         }
         if (specifier.type === 'ImportSpecifier' && !isType) {
+          // log('capture', path, specifier.imported.name)
           importedSpecifiers.add(specifier.imported.name)
         }
       })
     }
+    // log(importedSpecifiers)
 
     // only Flow types were imported
     if (hasImportedType && importedSpecifiers.size === 0) return null
@@ -477,6 +532,7 @@ ExportMap.parse = function(path, content, context) {
       },
       importedSpecifiers,
     })
+    // log('intermediate', m )
     return getter
   }
 
@@ -629,6 +685,26 @@ ExportMap.parse = function(path, content, context) {
       })
     }
   })
+
+  log('################' + path + '#############')
+  log('################' + path + '#############')
+  log('################' + path + '#############')
+  log('################' + path + '#############')
+  log('################' + path + '#############')
+  log('################' + path + '#############')
+  // log(JSON.stringify(m))
+  log(m)
+  for (const k in m) {
+    log(k, m[k].entries?m[k].entries() : m[k])
+  }
+  // log(Object.keys(m).map(k=> `${k}: ${m[k]}`))
+  // for (let [key, value] of m.imports.entries()) {
+    // log('KEYYYY', key)
+    // log('KEYYYY', key, JSON.stringify(value), value.importedSpecifiers, value.getter(path, context))
+    // log('KEYYYY', key, JSON.stringify(value), value.importedSpecifiers, value.getter(path, context))
+    // log(`${key}::${JSON.stringify(value.getter())}`)
+  // }
+  log('END')
 
   return m
 }
