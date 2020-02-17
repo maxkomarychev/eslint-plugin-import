@@ -36,9 +36,7 @@ export default class ExportMap {
     this.errors = []
   }
 
-  get hasDefault() {
-    return this.get('default') != null
-  } // stronger than this.has
+  get hasDefault() { return this.get('default') != null } // stronger than this.has 
 
   get size() {
     let size = this.namespace.size + this.reexports.size
@@ -86,8 +84,8 @@ export default class ExportMap {
     if (this.namespace.has(name)) return { found: true, path: [this] }
 
     if (this.reexports.has(name)) {
-      const reexports = this.reexports.get(name),
-        imported = reexports.getImport()
+      const reexports = this.reexports.get(name)
+          , imported = reexports.getImport()
 
       // if import is ignored, return explicit 'null'
       if (imported == null) return { found: true, path: [this] }
@@ -129,15 +127,14 @@ export default class ExportMap {
     if (this.namespace.has(name)) return this.namespace.get(name)
 
     if (this.reexports.has(name)) {
-      const reexports = this.reexports.get(name),
-        imported = reexports.getImport()
+      const reexports = this.reexports.get(name)
+          , imported = reexports.getImport()
 
       // if import is ignored, return explicit 'null'
       if (imported == null) return null
 
       // safeguard against cycles, only if name matches
-      if (imported.path === this.path && reexports.local === name)
-        {return undefined}
+      if (imported.path === this.path && reexports.local === name) {return undefined}
 
       return imported.get(reexports.local)
     }
@@ -161,17 +158,13 @@ export default class ExportMap {
   }
 
   forEach(callback, thisArg) {
-    this.namespace.forEach((v, n) => callback.call(thisArg, v, n, this))
+    this.namespace.forEach((v, n) =>
+      callback.call(thisArg, v, n, this))
 
     this.reexports.forEach((reexports, name) => {
       const reexported = reexports.getImport()
       // can't look up meta for ignored re-exports (#348)
-      callback.call(
-        thisArg,
-        reexported && reexported.get(reexports.local),
-        name,
-        this
-      )
+      callback.call( thisArg, reexported && reexported.get(reexports.local), name, this)
     })
 
     this.dependencies.forEach(dep => {
@@ -179,8 +172,8 @@ export default class ExportMap {
       // CJS / ignored dependencies won't exist (#717)
       if (d == null) return
 
-      d.forEach(
-        (v, n) => n !== 'default' && callback.call(thisArg, v, n, this)
+      d.forEach((v, n) =>
+        n !== 'default' && callback.call(thisArg, v, n, this)
       )
     })
   }
