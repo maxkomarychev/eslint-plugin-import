@@ -390,7 +390,6 @@ ExportMap.parse = function(path, content, context) {
       // log(JSON.stringify(node))
       if (node.callee.type === 'Import') {
         hasDynamicImports = true
-        try {
         const p = remotePath(node.arguments[0].value)
         if (p == null) return null
           const importLiteral = node.arguments[0]
@@ -406,10 +405,6 @@ ExportMap.parse = function(path, content, context) {
             },
             importedSpecifiers,
           })
-
-          } catch (e) {
-            log('ERRORRRRRR', e)
-          }
       }
     },
   })
