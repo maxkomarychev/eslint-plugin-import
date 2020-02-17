@@ -80,7 +80,7 @@ function __visit(node, keys, visitorSpec) {
       // console.log('no visitor!')
     }
     const childFields = keys[type]
-  if (!childFields) {
+    if (!childFields) {
       return
     }
     // console.log('child fields', childFields)
@@ -96,6 +96,12 @@ function __visit(node, keys, visitorSpec) {
       } else {
         __visit(field, keys, visitorSpec)
       }
+    }
+    if (typeof visitorSpec[`${type}:Exit`] === 'function') {
+      // console.log('has visitor!')
+      visitorSpec[`${type}:Exit`](node)
+    } else {
+      // console.log('no visitor!')
     }
     // console.log('children', keys[type])
     // for (const childName of keys[type]) {

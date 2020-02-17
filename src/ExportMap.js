@@ -390,41 +390,26 @@ ExportMap.parse = function(path, content, context) {
       // log(JSON.stringify(node))
       if (node.callee.type === 'Import') {
         hasDynamicImports = true
-
-          // log('parsing', node)
         try {
         const p = remotePath(node.arguments[0].value)
-        // log('dynamic import path', p)
         if (p == null) return null
-        // const existing = m.imports.get(p)
-          // if (existing != null) return existing.getter
-
-          // if (supportedTypes.has(specifier.type) && !isType) {
-          //   importedSpecifiers.add(specifier.type)
-          // }
-          // if (specifier.type === 'ImportSpecifier' && !isType) {
-          //   // log('capture', path, specifier.imported.name)
-          //   importedSpecifiers.add(specifier.imported.name)
-          // }
-
           const importLiteral = node.arguments[0]
+          const importedSpecifiers = new Set()
+          importedSpecifiers.add('ImportDefaultSpecifier')
+          const getter = thunkFor(p, context)
+          m.imports.set(p, {
+            getter,
+            source: {
+              // capturing actual node reference holds full AST in memory!
+              value: importLiteral.value,
+              loc: importLiteral.loc,
+            },
+            importedSpecifiers,
+          })
 
-        const importedSpecifiers = new Set()
-        importedSpecifiers.add('ImportDefaultSpecifier')
-        const getter = thunkFor(p, context)
-        m.imports.set(p, {
-          getter,
-          source: {
-            // capturing actual node reference holds full AST in memory!
-            value: importLiteral.value,
-            loc: importLiteral.loc,
-          },
-          importedSpecifiers,
-        })
-
-        } catch (e) {
-          log('ERRORRRRRR', e)
-        }
+          } catch (e) {
+            log('ERRORRRRRR', e)
+          }
       }
     },
   })
