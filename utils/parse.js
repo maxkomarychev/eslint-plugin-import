@@ -63,6 +63,39 @@ exports.default = function parse(path, content, context) {
   return parser.parse(content, parserOptions)
 }
 
+function __visit(node, keys, visitorSpec) {
+  if (!node) {
+    return
+  }
+    const type = node.type
+    if (typeof visitorSpec[type] === 'function') {
+      visitorSpec[type](node)
+    }
+    const childFields = keys[type]
+    if (!childFields) {
+      return
+    }
+    for (const fieldName of childFields) {
+      const field = node[fieldName]
+      if (Array.isArray(field)) {
+        for (const item of field) {
+          __visit(item, keys, visitorSpec)
+        }
+      } else {
+        __visit(field, keys, visitorSpec)
+      }
+    }
+    if (typeof visitorSpec[`${type}:Exit`] === 'function') {
+      visitorSpec[`${type}:Exit`](node)
+    }
+}
+
+exports.visit = function (ast, path, context, visitorSpec) {
+  const parserPath = getParserPath(path, context)
+  const keys = moduleRequire(parserPath.replace('index.js', 'visitor-keys.js'))
+  __visit(ast, keys, visitorSpec)
+}
+
 function getParserPath(path, context) {
   const parsers = context.settings['import/parsers']
   if (parsers != null) {

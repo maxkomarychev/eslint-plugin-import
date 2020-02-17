@@ -6,7 +6,7 @@ import debug from 'debug'
 
 import { SourceCode } from 'eslint'
 
-import parse from 'eslint-module-utils/parse'
+import parse, { visit } from 'eslint-module-utils/parse'
 import resolve from 'eslint-module-utils/resolve'
 import isIgnored, { hasValidExtension } from 'eslint-module-utils/ignore'
 
@@ -351,9 +351,66 @@ ExportMap.parse = function (path, content, context) {
     return m // can't continue
   }
 
-  if (!unambiguous.isModule(ast)) return null
+  let hasDynamicImports = false
 
-  const docstyle = (context.settings && context.settings['import/docstyle']) || ['jsdoc']
+  let declarator = null
+  visit(ast, path, context, {
+    VariableDeclarator(node) {
+      declarator = node
+      if (node.id.type === 'Identifier') {
+        log('Declarator', node.id.name)
+      } else if (node.id.type === 'ObjectPattern') {
+        log('Object pattern')
+      }
+    },
+    'VariableDeclarator:Exit': function() {
+      declarator = null
+    },
+    CallExpression(node) {
+      log('CALL', node.callee.type)
+      // log(JSON.stringify(node))
+      if (node.callee.type === 'Import') {
+        hasDynamicImports = true
+        const p = remotePath(node.arguments[0].value)
+        if (p == null) return null
+        if (declarator) {
+          log('IDDDDDDDD', declarator.id.name)
+        }
+          const importLiteral = node.arguments[0]
+          const importedSpecifiers = new Set()
+        if (declarator) {
+          if (declarator.id.type === 'Identifier') {
+            importedSpecifiers.add('ImportDefaultSpecifier')
+          } else if (declarator.id.type === 'ObjectPattern') {
+            for (const property of declarator.id.properties) {
+              log('ADD PROPERTY', property.key.name)
+              importedSpecifiers.add(property.key.name)
+            }
+          }
+          }
+          const getter = thunkFor(p, context)
+          m.imports.set(p, {
+            getter,
+            source: {
+              // capturing actual node reference holds full AST in memory!
+              value: importLiteral.value,
+              loc: importLiteral.loc,
+            },
+            importedSpecifiers,
+          })
+      }
+    },
+  })
+
+  if (!unambiguous.isModule(ast) && !hasDynamicImports) {
+    log('is not a module', path, hasDynamicImports)
+    return null
+  } else {
+    log('is a module!', path)
+  }
+
+  const docstyle = (context.settings &&
+    context.settings['import/docstyle']) || ['jsdoc']
   const docStyleParsers = {}
   docstyle.forEach(style => {
     docStyleParsers[style] = availableDocStyleParsers[style]

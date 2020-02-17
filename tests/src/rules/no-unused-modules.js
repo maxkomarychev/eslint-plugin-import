@@ -71,32 +71,47 @@ ruleTester.run('no-unused-modules', rule, {
 // tests for  exports
 ruleTester.run('no-unused-modules', rule, {
   valid: [
-
     test({ options: unusedExportsOptions,
-           code: 'import { o2 } from "./file-o";export default () => 12',
-           filename: testFilePath('./no-unused-modules/file-a.js')}),
+          code: 'import { o2 } from "./file-o";export default () => 12',
+          filename: testFilePath('./no-unused-modules/file-a.js'),
+          parser: require.resolve('babel-eslint')}),
     test({ options: unusedExportsOptions,
            code: 'export const b = 2',
-           filename: testFilePath('./no-unused-modules/file-b.js')}),
+           filename: testFilePath('./no-unused-modules/file-b.js'),
+           parser: require.resolve('babel-eslint')}),
     test({ options: unusedExportsOptions,
            code: 'const c1 = 3; function c2() { return 3 }; export { c1, c2 }',
-           filename: testFilePath('./no-unused-modules/file-c.js')}),
+           filename: testFilePath('./no-unused-modules/file-c.js'),
+           parser: require.resolve('babel-eslint')}),
     test({ options: unusedExportsOptions,
            code: 'export function d() { return 4 }',
-           filename: testFilePath('./no-unused-modules/file-d.js')}),
+           filename: testFilePath('./no-unused-modules/file-d.js'),
+           parser: require.resolve('babel-eslint')}),
     test({ options: unusedExportsOptions,
            code: 'export class q { q0() {} }',
-           filename: testFilePath('./no-unused-modules/file-q.js')}),
+           filename: testFilePath('./no-unused-modules/file-q.js'),
+           parser: require.resolve('babel-eslint')}),
     test({ options: unusedExportsOptions,
            code: 'const e0 = 5; export { e0 as e }',
-           filename: testFilePath('./no-unused-modules/file-e.js')}),
+           filename: testFilePath('./no-unused-modules/file-e.js'),
+           parser: require.resolve('babel-eslint')}),
     test({ options: unusedExportsOptions,
            code: 'const l0 = 5; const l = 10; export { l0 as l1, l }; export default () => {}',
-           filename: testFilePath('./no-unused-modules/file-l.js')}),
+           filename: testFilePath('./no-unused-modules/file-l.js'),
+           parser: require.resolve('babel-eslint')}),
     test({ options: unusedExportsOptions,
            code: 'const o0 = 0; const o1 = 1; export { o0, o1 as o2 }; export default () => {}',
-           filename: testFilePath('./no-unused-modules/file-o.js')}),
-    ],
+           filename: testFilePath('./no-unused-modules/file-o.js'),
+           parser: require.resolve('babel-eslint')}),
+    test({ options: unusedExportsOptions,
+           code: `
+           export const importMeDynamicallyA = 100;
+           const importMeDynamicallyB = 200;
+           export default importMeDynamicallayB;
+           `,
+           parser: require.resolve('babel-eslint'),
+           filename: testFilePath('./no-unused-modules/exports-for-dynamic.js')}),
+  ],
   invalid: [
     test({ options: unusedExportsOptions,
            code: `import eslint from 'eslint'
@@ -117,11 +132,25 @@ ruleTester.run('no-unused-modules', rule, {
              error(`exported declaration 'o0' not used within other modules`),
              error(`exported declaration 'o3' not used within other modules`),
              error(`exported declaration 'p' not used within other modules`),
-           ]}),
+           ],
+    }),
     test({ options: unusedExportsOptions,
            code: `const n0 = 'n0'; const n1 = 42; export { n0, n1 }; export default () => {}`,
            filename: testFilePath('./no-unused-modules/file-n.js'),
-           errors: [error(`exported declaration 'default' not used within other modules`)]}),
+           errors: [
+             error(`exported declaration 'default' not used within other modules`),
+           ]}),
+    test({ options: unusedExportsOptions,
+           code: `
+           export const importMeDynamicallyC = 100;
+           `,
+           parser: require.resolve('babel-eslint'),
+           filename: testFilePath('./no-unused-modules/exports-for-dynamic.js'),
+           errors: [
+             error(
+               `exported declaration 'importMeDynamicallyC' not used within other modules`,
+             ),
+           ]}),
   ],
 })
 
