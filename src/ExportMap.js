@@ -354,6 +354,13 @@ ExportMap.for = function(context) {
 
 ExportMap.parse = function(path, content, context) {
   var m = new ExportMap(path)
+  log('################' + path + '#############')
+  log('################' + path + '#############')
+  log('################' + path + '#############')
+  log('################' + path + '#############')
+  log('################' + path + '#############')
+  log('################' + path + '#############')
+
 
   try {
     var ast = parse(path, content, context)
@@ -384,7 +391,19 @@ ExportMap.parse = function(path, content, context) {
   // })
 
 
+  let declarator = null
   visit(ast, path, context, {
+    VariableDeclarator(node) {
+      declarator = node
+      if (node.id.type === 'Identifier') {
+        log('Declarator', node.id.name)
+      } else if (node.id.type === 'ObjectPattern') {
+        log('Object pattern')
+      }
+    },
+    'VariableDeclarator:Exit': function(node) {
+      declarator = null
+    },
     CallExpression(node) {
       log('CALL', node.callee.type)
       // log(JSON.stringify(node))
@@ -392,9 +411,21 @@ ExportMap.parse = function(path, content, context) {
         hasDynamicImports = true
         const p = remotePath(node.arguments[0].value)
         if (p == null) return null
+        if (declarator) {
+          log('IDDDDDDDD', declarator.id.name)
+        }
           const importLiteral = node.arguments[0]
           const importedSpecifiers = new Set()
-          importedSpecifiers.add('ImportDefaultSpecifier')
+        if (declarator) {
+          if (declarator.id.type === 'Identifier') {
+            importedSpecifiers.add('ImportDefaultSpecifier')
+          } else if (declarator.id.type === 'ObjectPattern') {
+            for (const property of declarator.id.properties) {
+              log('ADD PROPERTY', property.key.name)
+              importedSpecifiers.add(property.key.name)
+            }
+          }
+          }
           const getter = thunkFor(p, context)
           m.imports.set(p, {
             getter,
@@ -666,12 +697,6 @@ ExportMap.parse = function(path, content, context) {
     }
   })
 
-  log('################' + path + '#############')
-  log('################' + path + '#############')
-  log('################' + path + '#############')
-  log('################' + path + '#############')
-  log('################' + path + '#############')
-  log('################' + path + '#############')
   // log(JSON.stringify(m))
   log(m)
   for (const k in m) {
