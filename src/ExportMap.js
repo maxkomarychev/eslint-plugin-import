@@ -14,7 +14,6 @@ import { hashObject } from 'eslint-module-utils/hash'
 import * as unambiguous from 'eslint-module-utils/unambiguous'
 
 const log = debug('eslint-plugin-import:ExportMap')
-log.enabled = true
 
 const exportCache = new Map()
 
