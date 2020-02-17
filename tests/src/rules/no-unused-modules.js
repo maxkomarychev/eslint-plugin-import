@@ -42,84 +42,92 @@ const unusedExportsJsxOptions = [
   },
 ]
 
-// // tests for missing exports
-// ruleTester.run('no-unused-modules', rule, {
-//   valid: [
-//     test({ code: 'export default function noOptions() {}' }),
-//     test({ options: missingExportsOptions,
-//            code: 'export default () => 1'}),
-//     test({ options: missingExportsOptions,
-//            code: 'export const a = 1'}),
-//     test({ options: missingExportsOptions,
-//            code: 'const a = 1; export { a }'}),
-//     test({ options: missingExportsOptions,
-//            code: 'function a() { return true }; export { a }'}),
-//     test({ options: missingExportsOptions,
-//            code: 'const a = 1; const b = 2; export { a, b }'}),
-//     test({ options: missingExportsOptions,
-//            code: 'const a = 1; export default a'}),
-//     test({ options: missingExportsOptions,
-//            code: 'export class Foo {}'}),
-//   ],
-//   invalid: [
-//     test({
-//       options: missingExportsOptions,
-//       code: 'const a = 1',
-//       errors: [error(`No exports found`)],
-//     }),
-//     test({
-//       options: missingExportsOptions,
-//       code: '/* const a = 1 */',
-//       errors: [error(`No exports found`)],
-//     }),
-//   ],
-// })
+// tests for missing exports
+ruleTester.run('no-unused-modules', rule, {
+  valid: [
+    test({ code: 'export default function noOptions() {}' }),
+    test({ options: missingExportsOptions,
+           code: 'export default () => 1'}),
+    test({ options: missingExportsOptions,
+           code: 'export const a = 1'}),
+    test({ options: missingExportsOptions,
+           code: 'const a = 1; export { a }'}),
+    test({ options: missingExportsOptions,
+           code: 'function a() { return true }; export { a }'}),
+    test({ options: missingExportsOptions,
+           code: 'const a = 1; const b = 2; export { a, b }'}),
+    test({ options: missingExportsOptions,
+           code: 'const a = 1; export default a'}),
+    test({ options: missingExportsOptions,
+           code: 'export class Foo {}'}),
+  ],
+  invalid: [
+    test({
+      options: missingExportsOptions,
+      code: 'const a = 1',
+      errors: [error(`No exports found`)],
+    }),
+    test({
+      options: missingExportsOptions,
+      code: '/* const a = 1 */',
+      errors: [error(`No exports found`)],
+    }),
+  ],
+})
 
 // tests for  exports
 ruleTester.run('no-unused-modules', rule, {
   valid: [
-    // test({
-    //   options: unusedExportsOptions,
-    //   code: 'import { o2 } from "./file-o";export default () => 12',
-    //   filename: testFilePath('./no-unused-modules/file-a.js'),
-    // }),
-    // test({
-    //   options: unusedExportsOptions,
-    //   code: 'export const b = 2',
-    //   filename: testFilePath('./no-unused-modules/file-b.js'),
-    // }),
-    // test({
-    //   options: unusedExportsOptions,
-    //   code: 'const c1 = 3; function c2() { return 3 }; export { c1, c2 }',
-    //   filename: testFilePath('./no-unused-modules/file-c.js'),
-    // }),
-    // test({
-    //   options: unusedExportsOptions,
-    //   code: 'export function d() { return 4 }',
-    //   filename: testFilePath('./no-unused-modules/file-d.js'),
-    // }),
-    // test({
-    //   options: unusedExportsOptions,
-    //   code: 'export class q { q0() {} }',
-    //   filename: testFilePath('./no-unused-modules/file-q.js'),
-    // }),
-    // test({
-    //   options: unusedExportsOptions,
-    //   code: 'const e0 = 5; export { e0 as e }',
-    //   filename: testFilePath('./no-unused-modules/file-e.js'),
-    // }),
-    // test({
-    //   options: unusedExportsOptions,
-    //   code:
-    //     'const l0 = 5; const l = 10; export { l0 as l1, l }; export default () => {}',
-    //   filename: testFilePath('./no-unused-modules/file-l.js'),
-    // }),
-    // test({
-    //   options: unusedExportsOptions,
-    //   code:
-    //     'const o0 = 0; const o1 = 1; export { o0, o1 as o2 }; export default () => {}',
-    //   filename: testFilePath('./no-unused-modules/file-o.js'),
-    // }),
+    test({
+      options: unusedExportsOptions,
+      code: 'import { o2 } from "./file-o";export default () => 12',
+      filename: testFilePath('./no-unused-modules/file-a.js'),
+      parser: require.resolve('babel-eslint'),
+    }),
+    test({
+      options: unusedExportsOptions,
+      code: 'export const b = 2',
+      filename: testFilePath('./no-unused-modules/file-b.js'),
+      parser: require.resolve('babel-eslint'),
+    }),
+    test({
+      options: unusedExportsOptions,
+      code: 'const c1 = 3; function c2() { return 3 }; export { c1, c2 }',
+      filename: testFilePath('./no-unused-modules/file-c.js'),
+      parser: require.resolve('babel-eslint'),
+    }),
+    test({
+      options: unusedExportsOptions,
+      code: 'export function d() { return 4 }',
+      filename: testFilePath('./no-unused-modules/file-d.js'),
+      parser: require.resolve('babel-eslint'),
+    }),
+    test({
+      options: unusedExportsOptions,
+      code: 'export class q { q0() {} }',
+      filename: testFilePath('./no-unused-modules/file-q.js'),
+      parser: require.resolve('babel-eslint'),
+    }),
+    test({
+      options: unusedExportsOptions,
+      code: 'const e0 = 5; export { e0 as e }',
+      filename: testFilePath('./no-unused-modules/file-e.js'),
+      parser: require.resolve('babel-eslint'),
+    }),
+    test({
+      options: unusedExportsOptions,
+      code:
+        'const l0 = 5; const l = 10; export { l0 as l1, l }; export default () => {}',
+      filename: testFilePath('./no-unused-modules/file-l.js'),
+      parser: require.resolve('babel-eslint'),
+    }),
+    test({
+      options: unusedExportsOptions,
+      code:
+        'const o0 = 0; const o1 = 1; export { o0, o1 as o2 }; export default () => {}',
+      filename: testFilePath('./no-unused-modules/file-o.js'),
+      parser: require.resolve('babel-eslint'),
+    }),
     test({
       options: unusedExportsOptions,
       code: `
