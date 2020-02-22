@@ -1,3 +1,3 @@
 async function main() {
-    const { importMeDynamicallyA, } = await import("./exports-for-dynamic")
+    const { a, } = await import("./exports-for-dynamic-named")
 }

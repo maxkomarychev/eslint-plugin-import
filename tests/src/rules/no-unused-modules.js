@@ -178,23 +178,36 @@ ruleTester.run('no-unused-modules', rule, {
   valid: [
     test({ options: unusedExportsOptions,
            code: `
-           export const importMeDynamicallyA = 100;
-           const importMeDynamicallyB = 200;
-           export default importMeDynamicallyB;
+           export const a = 10
+           export const b = 20
+           export const c = 30
+           const d = 40
+           export default d
+           
            `,
            parser: require.resolve('babel-eslint'),
-           filename: testFilePath('./no-unused-modules/exports-for-dynamic.js')}),
+           filename: testFilePath('./no-unused-modules/exports-for-dynamic-namespace.js')}),
   ],
   invalid: [
     test({ options: unusedExportsOptions,
            code: `
-           export const importMeDynamicallyC = 100;
-           `,
+           export const a = 10
+           export const b = 20
+           export const c = 30
+           const d = 40
+           export default d
+                      `,
            parser: require.resolve('babel-eslint'),
-           filename: testFilePath('./no-unused-modules/exports-for-dynamic.js'),
+           filename: testFilePath('./no-unused-modules/exports-for-dynamic-named.js'),
            errors: [
              error(
-               `exported declaration 'importMeDynamicallyC' not used within other modules`,
+               `exported declaration 'b' not used within other modules`,
+             ),
+             error(
+               `exported declaration 'c' not used within other modules`,
+             ),
+             error(
+               `exported declaration 'default' not used within other modules`,
              ),
            ]}),
   ],
