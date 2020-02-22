@@ -368,15 +368,30 @@ ExportMap.parse = function (path, content, context) {
     },
     CallExpression(node) {
       log('CALL', node.callee.type)
+      function literalFromCall(node) {
+        if (!node) {
+          return null
+        }
+        if (!node.arguments.length) {
+          return null
+        }
+        if (node.arguments[0].type !== 'Literal') {
+          return null
+        }
+        return node.arguments[0]
+      }
       // log(JSON.stringify(node))
       if (node.callee.type === 'Import') {
         hasDynamicImports = true
-        const p = remotePath(node.arguments[0].value)
+        const literal = literalFromCall(node)
+        if (!literal) {
+          return null
+        }
+        const p = remotePath(literal.value)
         if (p == null) return null
         if (declarator) {
           log('IDDDDDDDD', declarator.id.name)
         }
-          const importLiteral = node.arguments[0]
           const importedSpecifiers = new Set()
         if (declarator) {
           if (declarator.id.type === 'Identifier') {
@@ -393,8 +408,8 @@ ExportMap.parse = function (path, content, context) {
             getter,
             source: {
               // capturing actual node reference holds full AST in memory!
-              value: importLiteral.value,
-              loc: importLiteral.loc,
+              value: literal.value,
+              loc: literal.loc,
             },
             importedSpecifiers,
           })
