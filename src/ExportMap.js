@@ -380,7 +380,7 @@ ExportMap.parse = function (path, content, context) {
           const importedSpecifiers = new Set()
         if (declarator) {
           if (declarator.id.type === 'Identifier') {
-            importedSpecifiers.add('ImportDefaultSpecifier')
+            importedSpecifiers.add('ImportNamespaceSpecifier')
           } else if (declarator.id.type === 'ObjectPattern') {
             for (const property of declarator.id.properties) {
               log('ADD PROPERTY', property.key.name)
