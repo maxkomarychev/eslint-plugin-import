@@ -346,58 +346,43 @@ ExportMap.parse = function (path, content, context) {
   try {
     var ast = parse(path, content, context)
   } catch (err) {
-    log('parse error:', path, err)
+    console.error('parse error:', path, err)
     m.errors.push(err)
     return m // can't continue
   }
 
   let hasDynamicImports = false
 
-  let declarator = null
   visit(ast, path, context, {
-    VariableDeclarator(node) {
-      declarator = node
-      if (node.id.type === 'Identifier') {
-        log('Declarator', node.id.name)
-      } else if (node.id.type === 'ObjectPattern') {
-        log('Object pattern')
-      }
-    },
-    'VariableDeclarator:Exit': function() {
-      declarator = null
-    },
     CallExpression(node) {
-      log('CALL', node.callee.type)
-      // log(JSON.stringify(node))
       if (node.callee.type === 'Import') {
         hasDynamicImports = true
-        const p = remotePath(node.arguments[0].value)
-        if (p == null) return null
-        if (declarator) {
-          log('IDDDDDDDD', declarator.id.name)
+        if (!node.arguments.length) {
+          return null
         }
-          const importLiteral = node.arguments[0]
-          const importedSpecifiers = new Set()
-        if (declarator) {
-          if (declarator.id.type === 'Identifier') {
-            importedSpecifiers.add('ImportNamespaceSpecifier')
-          } else if (declarator.id.type === 'ObjectPattern') {
-            for (const property of declarator.id.properties) {
-              log('ADD PROPERTY', property.key.name)
-              importedSpecifiers.add(property.key.name)
-            }
-          }
-          }
-          const getter = thunkFor(p, context)
-          m.imports.set(p, {
-            getter,
-            source: {
-              // capturing actual node reference holds full AST in memory!
-              value: importLiteral.value,
-              loc: importLiteral.loc,
-            },
-            importedSpecifiers,
-          })
+        if (node.arguments[0].type !== 'Literal') {
+          return null
+        }
+        const literal = node.arguments[0]
+        if (!literal) {
+          return null
+        }
+        const p = remotePath(literal.value)
+        if (p == null) {
+          return null
+        }
+        const importedSpecifiers = new Set()
+        importedSpecifiers.add('ImportNamespaceSpecifier')
+        const getter = thunkFor(p, context)
+        m.imports.set(p, {
+          getter,
+          source: {
+            // capturing actual node reference holds full AST in memory!
+            value: literal.value,
+            loc: literal.loc,
+          },
+          importedSpecifiers,
+        })
       }
     },
   })
