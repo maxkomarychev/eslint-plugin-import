@@ -353,19 +353,19 @@ ExportMap.parse = function (path, content, context) {
 
   let hasDynamicImports = false
 
-  let declarator = null
+  // let declarator = null
   visit(ast, path, context, {
-    VariableDeclarator(node) {
-      declarator = node
-      if (node.id.type === 'Identifier') {
-        log('Declarator', node.id.name)
-      } else if (node.id.type === 'ObjectPattern') {
-        log('Object pattern')
-      }
-    },
-    'VariableDeclarator:Exit': function() {
-      declarator = null
-    },
+    // VariableDeclarator(node) {
+    //   declarator = node
+    //   if (node.id.type === 'Identifier') {
+    //     log('Declarator', node.id.name)
+    //   } else if (node.id.type === 'ObjectPattern') {
+    //     log('Object pattern')
+    //   }
+    // },
+    // 'VariableDeclarator:Exit': function() {
+    //   declarator = null
+    // },
     CallExpression(node) {
       log('CALL', node.callee.type)
       function literalFromCall(node) {
@@ -383,26 +383,38 @@ ExportMap.parse = function (path, content, context) {
       // log(JSON.stringify(node))
       if (node.callee.type === 'Import') {
         hasDynamicImports = true
-        const literal = literalFromCall(node)
+        if (!node.arguments.length) {
+          return null
+        }
+        if (node.arguments[0].type !== 'Literal') {
+          return null
+        }
+        // return node.arguments[0]
+ 
+        // const literal = literalFromCall(node)
+        const literal = node.arguments[0]
         if (!literal) {
           return null
         }
         const p = remotePath(literal.value)
-        if (p == null) return null
-        if (declarator) {
-          log('IDDDDDDDD', declarator.id.name)
+        if (p == null) {
+          return null
         }
-          const importedSpecifiers = new Set()
-        if (declarator) {
-          if (declarator.id.type === 'Identifier') {
-            importedSpecifiers.add('ImportNamespaceSpecifier')
-          } else if (declarator.id.type === 'ObjectPattern') {
-            for (const property of declarator.id.properties) {
-              log('ADD PROPERTY', property.key.name)
-              importedSpecifiers.add(property.key.name)
-            }
-          }
-          }
+        // if (declarator) {
+        //   log('IDDDDDDDD', declarator.id.name)
+        // }
+        const importedSpecifiers = new Set()
+        importedSpecifiers.add('ImportNamespaceSpecifier')
+        // if (declarator) {
+        //   if (declarator.id.type === 'Identifier') {
+        //     importedSpecifiers.add('ImportNamespaceSpecifier')
+        //   } else if (declarator.id.type === 'ObjectPattern') {
+        //     for (const property of declarator.id.properties) {
+        //       log('ADD PROPERTY', property.key.name)
+        //       importedSpecifiers.add(property.key.name)
+        //     }
+        //   }
+        //   }
           const getter = thunkFor(p, context)
           m.imports.set(p, {
             getter,

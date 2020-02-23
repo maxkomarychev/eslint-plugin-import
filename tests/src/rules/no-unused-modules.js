@@ -183,33 +183,11 @@ ruleTester.run('no-unused-modules', rule, {
            export const c = 30
            const d = 40
            export default d
-           
            `,
            parser: require.resolve('babel-eslint'),
-           filename: testFilePath('./no-unused-modules/exports-for-dynamic-namespace.js')}),
+           filename: testFilePath('./no-unused-modules/exports-for-dynamic.js')}),
   ],
   invalid: [
-    test({ options: unusedExportsOptions,
-           code: `
-           export const a = 10
-           export const b = 20
-           export const c = 30
-           const d = 40
-           export default d
-                      `,
-           parser: require.resolve('babel-eslint'),
-           filename: testFilePath('./no-unused-modules/exports-for-dynamic-named.js'),
-           errors: [
-             error(
-               `exported declaration 'b' not used within other modules`,
-             ),
-             error(
-               `exported declaration 'c' not used within other modules`,
-             ),
-             error(
-               `exported declaration 'default' not used within other modules`,
-             ),
-           ]}),
   ],
 })
 
