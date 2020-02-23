@@ -367,19 +367,19 @@ ExportMap.parse = function (path, content, context) {
     //   declarator = null
     // },
     CallExpression(node) {
-      log('CALL', node.callee.type)
-      function literalFromCall(node) {
-        if (!node) {
-          return null
-        }
-        if (!node.arguments.length) {
-          return null
-        }
-        if (node.arguments[0].type !== 'Literal') {
-          return null
-        }
-        return node.arguments[0]
-      }
+      // log('CALL', node.callee.type)
+      // function literalFromCall(node) {
+      //   if (!node) {
+      //     return null
+      //   }
+      //   if (!node.arguments.length) {
+      //     return null
+      //   }
+      //   if (node.arguments[0].type !== 'Literal') {
+      //     return null
+      //   }
+      //   return node.arguments[0]
+      // }
       // log(JSON.stringify(node))
       if (node.callee.type === 'Import') {
         hasDynamicImports = true
