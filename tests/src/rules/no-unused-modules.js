@@ -185,6 +185,16 @@ ruleTester.run('no-unused-modules', rule, {
            export default d
            `,
            parser: require.resolve('babel-eslint'),
+           filename: testFilePath('./no-unused-modules/exports-for-dynamic.ts')}),
+    test({ options: unusedExportsOptions,
+           code: `
+           export const a = 10
+           export const b = 20
+           export const c = 30
+           const d = 40
+           export default d
+           `,
+           parser: require.resolve('@typescript-eslint/parser'),
            filename: testFilePath('./no-unused-modules/exports-for-dynamic.js')}),
   ],
   invalid: [
