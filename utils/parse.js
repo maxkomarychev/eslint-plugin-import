@@ -7,7 +7,7 @@ const fs = require('fs')
 
 const log = require('debug')('eslint-plugin-import:parse')
 
-function getBabelVisitorKeys(path) {
+function getBabelVisitorKeys(path, context) {
   const parserPath = getParserPath(path, context)
   const hypotheticalLocation = parserPath.replace('index.js', 'visitor-keys.js')
   if (fs.existsSync(hypotheticalLocation)) {
@@ -47,8 +47,9 @@ function __visit(node, keys, visitorSpec) {
 }
 
 exports.visit = function (ast, path, context, visitorSpec) {
-  const parserPath = getParserPath(path, context)
-  const keys = moduleRequire(parserPath.replace('index.js', 'visitor-keys.js'))
+  // const parserPath = getParserPath(path, context)
+  // const keys = moduleRequire(parserPath.replace('index.js', 'visitor-keys.js'))
+  const keys = getBabelVisitorKeys(path, context)
   __visit(ast, keys, visitorSpec)
 }
 
