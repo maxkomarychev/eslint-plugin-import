@@ -105,6 +105,7 @@ exports.default = function parse(path, content, context) {
       // console.log('parser output', Object.keys(parserRaw))
       // console.log(JSON.stringify(parserRaw))
       ast = parserRaw.ast
+      return {ast, visitorKeys}
     } catch (e) {
       //
     }
@@ -116,11 +117,11 @@ exports.default = function parse(path, content, context) {
         path
       )
     } else {
-      return ast
+      return { ast, visitorKeys }
     }
   }
 
-  return parser.parse(content, parserOptions)
+  return { ast: parser.parse(content, parserOptions), visitorKeys: visitorKeys|| getBabelVisitorKeys() }
 }
 
 

@@ -344,7 +344,7 @@ ExportMap.parse = function (path, content, context) {
   var m = new ExportMap(path)
 
   try {
-    var ast = parse(path, content, context)
+    var { ast, visitorKeys } = parse(path, content, context)
   } catch (err) {
     console.error('parse error:', path, err)
     m.errors.push(err)
