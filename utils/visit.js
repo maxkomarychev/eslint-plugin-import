@@ -1,6 +1,8 @@
 
 exports.__esModule = true
 exports.default = function __visit(node, keys, visitorSpec) {
+  // console.log('node', node)
+  // console.log('keys', keys)
   if (!node) {
     return
   }

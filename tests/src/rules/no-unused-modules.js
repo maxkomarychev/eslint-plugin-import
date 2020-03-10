@@ -736,7 +736,7 @@ typescriptRuleTester.run('no-unused-modules', rule, {
 //   })
 // })
 
-describe('Avoid errors if re-export all from umd compiled library', () => {
+describe.only('Avoid errors if re-export all from umd compiled library', () => {
   ruleTester.run('no-unused-modules', rule, {
     valid: [
       test({ options: unusedExportsOptions,
