@@ -65,18 +65,11 @@ exports.default = function parse(path, content, context) {
   
   // require the parser relative to the main module (i.e., ESLint)
   const parser = moduleRequire(parserPath)
-  // if parser is estree
-  // console.log('parser', parserPath, Object.keys(parser))
-  // console.log(JSON.stringify(parser))
 
   if (typeof parser.parseForESLint === 'function') {
-    // console.log('has parse for estlint')
     let ast
     try {
       const parserRaw = parser.parseForESLint(content, parserOptions)
-      // if parser is @typescript-eslint/parser
-      // console.log('parser output', Object.keys(parserRaw))
-      // console.log(JSON.stringify(parserRaw))
       ast = parserRaw.ast
       return {
         ast,
