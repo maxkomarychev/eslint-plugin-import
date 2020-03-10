@@ -34,144 +34,144 @@ const unusedExportsJsxOptions = [{
   ignoreExports: undefined,
 }]
 
-// // tests for missing exports
-// ruleTester.run('no-unused-modules', rule, {
-//   valid: [
-//     test({ code: 'export default function noOptions() {}' }),
-//     test({ options: missingExportsOptions,
-//            code: 'export default () => 1'}),
-//     test({ options: missingExportsOptions,
-//            code: 'export const a = 1'}),
-//     test({ options: missingExportsOptions,
-//            code: 'const a = 1; export { a }'}),
-//     test({ options: missingExportsOptions,
-//            code: 'function a() { return true }; export { a }'}),
-//     test({ options: missingExportsOptions,
-//            code: 'const a = 1; const b = 2; export { a, b }'}),
-//     test({ options: missingExportsOptions,
-//            code: 'const a = 1; export default a'}),
-//     test({ options: missingExportsOptions,
-//            code: 'export class Foo {}'}),
-//   ],
-//   invalid: [
-//     test({
-//       options: missingExportsOptions,
-//       code: 'const a = 1',
-//       errors: [error(`No exports found`)],
-//     }),
-//     test({
-//       options: missingExportsOptions,
-//       code: '/* const a = 1 */',
-//       errors: [error(`No exports found`)],
-//     }),
-//   ],
-// })
+// tests for missing exports
+ruleTester.run('no-unused-modules', rule, {
+  valid: [
+    test({ code: 'export default function noOptions() {}' }),
+    test({ options: missingExportsOptions,
+           code: 'export default () => 1'}),
+    test({ options: missingExportsOptions,
+           code: 'export const a = 1'}),
+    test({ options: missingExportsOptions,
+           code: 'const a = 1; export { a }'}),
+    test({ options: missingExportsOptions,
+           code: 'function a() { return true }; export { a }'}),
+    test({ options: missingExportsOptions,
+           code: 'const a = 1; const b = 2; export { a, b }'}),
+    test({ options: missingExportsOptions,
+           code: 'const a = 1; export default a'}),
+    test({ options: missingExportsOptions,
+           code: 'export class Foo {}'}),
+  ],
+  invalid: [
+    test({
+      options: missingExportsOptions,
+      code: 'const a = 1',
+      errors: [error(`No exports found`)],
+    }),
+    test({
+      options: missingExportsOptions,
+      code: '/* const a = 1 */',
+      errors: [error(`No exports found`)],
+    }),
+  ],
+})
 
 
-// // tests for  exports
-// ruleTester.run('no-unused-modules', rule, {
-//   valid: [
-//     test({ options: unusedExportsOptions,
-//           code: 'import { o2 } from "./file-o";export default () => 12',
-//           filename: testFilePath('./no-unused-modules/file-a.js'),
-//           parser: require.resolve('babel-eslint')}),
-//     test({ options: unusedExportsOptions,
-//            code: 'export const b = 2',
-//            filename: testFilePath('./no-unused-modules/file-b.js'),
-//            parser: require.resolve('babel-eslint')}),
-//     test({ options: unusedExportsOptions,
-//            code: 'const c1 = 3; function c2() { return 3 }; export { c1, c2 }',
-//            filename: testFilePath('./no-unused-modules/file-c.js'),
-//            parser: require.resolve('babel-eslint')}),
-//     test({ options: unusedExportsOptions,
-//            code: 'export function d() { return 4 }',
-//            filename: testFilePath('./no-unused-modules/file-d.js'),
-//            parser: require.resolve('babel-eslint')}),
-//     test({ options: unusedExportsOptions,
-//            code: 'export class q { q0() {} }',
-//            filename: testFilePath('./no-unused-modules/file-q.js'),
-//            parser: require.resolve('babel-eslint')}),
-//     test({ options: unusedExportsOptions,
-//            code: 'const e0 = 5; export { e0 as e }',
-//            filename: testFilePath('./no-unused-modules/file-e.js'),
-//            parser: require.resolve('babel-eslint')}),
-//     test({ options: unusedExportsOptions,
-//            code: 'const l0 = 5; const l = 10; export { l0 as l1, l }; export default () => {}',
-//            filename: testFilePath('./no-unused-modules/file-l.js'),
-//            parser: require.resolve('babel-eslint')}),
-//     test({ options: unusedExportsOptions,
-//            code: 'const o0 = 0; const o1 = 1; export { o0, o1 as o2 }; export default () => {}',
-//            filename: testFilePath('./no-unused-modules/file-o.js'),
-//            parser: require.resolve('babel-eslint')}),
-//   ],
-//   invalid: [
-//     test({ options: unusedExportsOptions,
-//            code: `import eslint from 'eslint'
-//            import fileA from './file-a'
-//            import { b } from './file-b'
-//            import { c1, c2 } from './file-c'
-//            import { d } from './file-d'
-//            import { e } from './file-e'
-//            import { e2 } from './file-e'
-//            import { h2 } from './file-h'
-//            import * as l from './file-l'
-//            export * from './file-n'
-//            export { default, o0, o3 } from './file-o'
-//            export { p } from './file-p'`,
-//            filename: testFilePath('./no-unused-modules/file-0.js'),
-//            errors: [
-//              error(`exported declaration 'default' not used within other modules`),
-//              error(`exported declaration 'o0' not used within other modules`),
-//              error(`exported declaration 'o3' not used within other modules`),
-//              error(`exported declaration 'p' not used within other modules`),
-//            ],
-//     }),
-//     test({ options: unusedExportsOptions,
-//            code: `const n0 = 'n0'; const n1 = 42; export { n0, n1 }; export default () => {}`,
-//            filename: testFilePath('./no-unused-modules/file-n.js'),
-//            errors: [
-//              error(`exported declaration 'default' not used within other modules`),
-//            ]}),
-//   ],
-// })
+// tests for  exports
+ruleTester.run('no-unused-modules', rule, {
+  valid: [
+    test({ options: unusedExportsOptions,
+          code: 'import { o2 } from "./file-o";export default () => 12',
+          filename: testFilePath('./no-unused-modules/file-a.js'),
+          parser: require.resolve('babel-eslint')}),
+    test({ options: unusedExportsOptions,
+           code: 'export const b = 2',
+           filename: testFilePath('./no-unused-modules/file-b.js'),
+           parser: require.resolve('babel-eslint')}),
+    test({ options: unusedExportsOptions,
+           code: 'const c1 = 3; function c2() { return 3 }; export { c1, c2 }',
+           filename: testFilePath('./no-unused-modules/file-c.js'),
+           parser: require.resolve('babel-eslint')}),
+    test({ options: unusedExportsOptions,
+           code: 'export function d() { return 4 }',
+           filename: testFilePath('./no-unused-modules/file-d.js'),
+           parser: require.resolve('babel-eslint')}),
+    test({ options: unusedExportsOptions,
+           code: 'export class q { q0() {} }',
+           filename: testFilePath('./no-unused-modules/file-q.js'),
+           parser: require.resolve('babel-eslint')}),
+    test({ options: unusedExportsOptions,
+           code: 'const e0 = 5; export { e0 as e }',
+           filename: testFilePath('./no-unused-modules/file-e.js'),
+           parser: require.resolve('babel-eslint')}),
+    test({ options: unusedExportsOptions,
+           code: 'const l0 = 5; const l = 10; export { l0 as l1, l }; export default () => {}',
+           filename: testFilePath('./no-unused-modules/file-l.js'),
+           parser: require.resolve('babel-eslint')}),
+    test({ options: unusedExportsOptions,
+           code: 'const o0 = 0; const o1 = 1; export { o0, o1 as o2 }; export default () => {}',
+           filename: testFilePath('./no-unused-modules/file-o.js'),
+           parser: require.resolve('babel-eslint')}),
+  ],
+  invalid: [
+    test({ options: unusedExportsOptions,
+           code: `import eslint from 'eslint'
+           import fileA from './file-a'
+           import { b } from './file-b'
+           import { c1, c2 } from './file-c'
+           import { d } from './file-d'
+           import { e } from './file-e'
+           import { e2 } from './file-e'
+           import { h2 } from './file-h'
+           import * as l from './file-l'
+           export * from './file-n'
+           export { default, o0, o3 } from './file-o'
+           export { p } from './file-p'`,
+           filename: testFilePath('./no-unused-modules/file-0.js'),
+           errors: [
+             error(`exported declaration 'default' not used within other modules`),
+             error(`exported declaration 'o0' not used within other modules`),
+             error(`exported declaration 'o3' not used within other modules`),
+             error(`exported declaration 'p' not used within other modules`),
+           ],
+    }),
+    test({ options: unusedExportsOptions,
+           code: `const n0 = 'n0'; const n1 = 42; export { n0, n1 }; export default () => {}`,
+           filename: testFilePath('./no-unused-modules/file-n.js'),
+           errors: [
+             error(`exported declaration 'default' not used within other modules`),
+           ]}),
+  ],
+})
 
-// // test for unused exports
-// ruleTester.run('no-unused-modules', rule, {
-//   valid: [],
-//   invalid: [
-//     test({ options: unusedExportsOptions,
-//            code: 'export default () => 13',
-//            filename: testFilePath('./no-unused-modules/file-f.js'),
-//            errors: [error(`exported declaration 'default' not used within other modules`)]}),
-//     test({ options: unusedExportsOptions,
-//            code: 'export const g = 2',
-//            filename: testFilePath('./no-unused-modules/file-g.js'),
-//            errors: [error(`exported declaration 'g' not used within other modules`)]}),
-//     test({ options: unusedExportsOptions,
-//            code: 'const h1 = 3; function h2() { return 3 }; const h3 = true; export { h1, h2, h3 }',
-//            filename: testFilePath('./no-unused-modules/file-h.js'),
-//            errors: [error(`exported declaration 'h1' not used within other modules`)]}),
-//     test({ options: unusedExportsOptions,
-//            code: 'const i1 = 3; function i2() { return 3 }; export { i1, i2 }',
-//            filename: testFilePath('./no-unused-modules/file-i.js'),
-//            errors: [
-//              error(`exported declaration 'i1' not used within other modules`),
-//              error(`exported declaration 'i2' not used within other modules`),
-//            ]}),
-//     test({ options: unusedExportsOptions,
-//            code: 'export function j() { return 4 }',
-//            filename: testFilePath('./no-unused-modules/file-j.js'),
-//            errors: [error(`exported declaration 'j' not used within other modules`)]}),
-//     test({ options: unusedExportsOptions,
-//            code: 'export class q { q0() {} }',
-//            filename: testFilePath('./no-unused-modules/file-q.js'),
-//            errors: [error(`exported declaration 'q' not used within other modules`)]}),
-//     test({ options: unusedExportsOptions,
-//            code: 'const k0 = 5; export { k0 as k }',
-//            filename: testFilePath('./no-unused-modules/file-k.js'),
-//            errors: [error(`exported declaration 'k' not used within other modules`)]}),
-//   ],
-// })
+// test for unused exports
+ruleTester.run('no-unused-modules', rule, {
+  valid: [],
+  invalid: [
+    test({ options: unusedExportsOptions,
+           code: 'export default () => 13',
+           filename: testFilePath('./no-unused-modules/file-f.js'),
+           errors: [error(`exported declaration 'default' not used within other modules`)]}),
+    test({ options: unusedExportsOptions,
+           code: 'export const g = 2',
+           filename: testFilePath('./no-unused-modules/file-g.js'),
+           errors: [error(`exported declaration 'g' not used within other modules`)]}),
+    test({ options: unusedExportsOptions,
+           code: 'const h1 = 3; function h2() { return 3 }; const h3 = true; export { h1, h2, h3 }',
+           filename: testFilePath('./no-unused-modules/file-h.js'),
+           errors: [error(`exported declaration 'h1' not used within other modules`)]}),
+    test({ options: unusedExportsOptions,
+           code: 'const i1 = 3; function i2() { return 3 }; export { i1, i2 }',
+           filename: testFilePath('./no-unused-modules/file-i.js'),
+           errors: [
+             error(`exported declaration 'i1' not used within other modules`),
+             error(`exported declaration 'i2' not used within other modules`),
+           ]}),
+    test({ options: unusedExportsOptions,
+           code: 'export function j() { return 4 }',
+           filename: testFilePath('./no-unused-modules/file-j.js'),
+           errors: [error(`exported declaration 'j' not used within other modules`)]}),
+    test({ options: unusedExportsOptions,
+           code: 'export class q { q0() {} }',
+           filename: testFilePath('./no-unused-modules/file-q.js'),
+           errors: [error(`exported declaration 'q' not used within other modules`)]}),
+    test({ options: unusedExportsOptions,
+           code: 'const k0 = 5; export { k0 as k }',
+           filename: testFilePath('./no-unused-modules/file-k.js'),
+           errors: [error(`exported declaration 'k' not used within other modules`)]}),
+  ],
+})
 
 // test for unused exports with `import()`
 ruleTester.run('no-unused-modules', rule, {
