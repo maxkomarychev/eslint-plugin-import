@@ -387,15 +387,9 @@ ExportMap.parse = function (path, content, context) {
     },
   })
 
-  if (!unambiguous.isModule(ast) && !hasDynamicImports) {
-    log('is not a module', path, hasDynamicImports)
-    return null
-  } else {
-    log('is a module!', path)
-  }
+  if (!unambiguous.isModule(ast) && !hasDynamicImports) return null
 
-  const docstyle = (context.settings &&
-    context.settings['import/docstyle']) || ['jsdoc']
+  const docstyle = (context.settings && context.settings['import/docstyle']) || ['jsdoc']
   const docStyleParsers = {}
   docstyle.forEach(style => {
     docStyleParsers[style] = availableDocStyleParsers[style]
