@@ -704,39 +704,39 @@ typescriptRuleTester.run('no-unused-modules', rule, {
 //   })
 // })
 
-// describe('correctly report flow types', () => {
-//   ruleTester.run('no-unused-modules', rule, {
-//     valid: [
-//       test({
-//         options: unusedExportsOptions,
-//         code: 'import { type FooType } from "./flow-2";',
-//         parser: require.resolve('babel-eslint'),
-//         filename: testFilePath('./no-unused-modules/flow-0.js'),
-//       }),
-//       test({
-//         options: unusedExportsOptions,
-//         code: `// @flow strict
-//                export type FooType = string;`,
-//         parser: require.resolve('babel-eslint'),
-//         filename: testFilePath('./no-unused-modules/flow-2.js'),
-//       }),
-//     ],
-//     invalid: [
-//       test({
-//         options: unusedExportsOptions,
-//         code: `// @flow strict
-//                export type Bar = string;`,
-//         parser: require.resolve('babel-eslint'),
-//         filename: testFilePath('./no-unused-modules/flow-1.js'),
-//         errors: [
-//           error(`exported declaration 'Bar' not used within other modules`),
-//         ],
-//       }),
-//     ],
-//   })
-// })
+describe('correctly report flow types', () => {
+  ruleTester.run('no-unused-modules', rule, {
+    valid: [
+      test({
+        options: unusedExportsOptions,
+        code: 'import { type FooType } from "./flow-2";',
+        parser: require.resolve('babel-eslint'),
+        filename: testFilePath('./no-unused-modules/flow-0.js'),
+      }),
+      test({
+        options: unusedExportsOptions,
+        code: `// @flow strict
+               export type FooType = string;`,
+        parser: require.resolve('babel-eslint'),
+        filename: testFilePath('./no-unused-modules/flow-2.js'),
+      }),
+    ],
+    invalid: [
+      test({
+        options: unusedExportsOptions,
+        code: `// @flow strict
+               export type Bar = string;`,
+        parser: require.resolve('babel-eslint'),
+        filename: testFilePath('./no-unused-modules/flow-1.js'),
+        errors: [
+          error(`exported declaration 'Bar' not used within other modules`),
+        ],
+      }),
+    ],
+  })
+})
 
-describe.only('Avoid errors if re-export all from umd compiled library', () => {
+describe('Avoid errors if re-export all from umd compiled library', () => {
   ruleTester.run('no-unused-modules', rule, {
     valid: [
       test({ options: unusedExportsOptions,
