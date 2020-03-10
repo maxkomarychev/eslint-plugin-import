@@ -7,6 +7,7 @@ import debug from 'debug'
 import { SourceCode } from 'eslint'
 
 import parse from 'eslint-module-utils/parse'
+import visit from 'eslint-module-utils/visit'
 import resolve from 'eslint-module-utils/resolve'
 import isIgnored, { hasValidExtension } from 'eslint-module-utils/ignore'
 
@@ -344,14 +345,43 @@ ExportMap.parse = function (path, content, context) {
   var m = new ExportMap(path)
 
   try {
-    var ast = parse(path, content, context)
+    var { ast, visitorKeys } = parse(path, content, context)
   } catch (err) {
-    log('parse error:', path, err)
     m.errors.push(err)
     return m // can't continue
   }
 
-  if (!unambiguous.isModule(ast)) return null
+  let hasDynamicImports = false
+
+  visit(ast, visitorKeys, {
+    CallExpression(node) {
+      if (node.callee.type === 'Import') {
+        hasDynamicImports = true
+        const firstArgument = node.arguments[0]
+        if (firstArgument.type !== 'Literal') {
+          return null
+        }
+        const p = remotePath(firstArgument.value)
+        if (p == null) {
+          return null
+        }
+        const importedSpecifiers = new Set()
+        importedSpecifiers.add('ImportNamespaceSpecifier')
+        const getter = thunkFor(p, context)
+        m.imports.set(p, {
+          getter,
+          source: {
+            // capturing actual node reference holds full AST in memory!
+            value: firstArgument.value,
+            loc: firstArgument.loc,
+          },
+          importedSpecifiers,
+        })
+      }
+    },
+  })
+
+  if (!unambiguous.isModule(ast) && !hasDynamicImports) return null
 
   const docstyle = (context.settings && context.settings['import/docstyle']) || ['jsdoc']
   const docStyleParsers = {}
