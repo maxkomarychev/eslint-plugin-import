@@ -72,9 +72,9 @@ ruleTester.run('no-unused-modules', rule, {
 ruleTester.run('no-unused-modules', rule, {
   valid: [
     test({ options: unusedExportsOptions,
-          code: 'import { o2 } from "./file-o";export default () => 12',
-          filename: testFilePath('./no-unused-modules/file-a.js'),
-          parser: require.resolve('babel-eslint')}),
+           code: 'import { o2 } from "./file-o";export default () => 12',
+           filename: testFilePath('./no-unused-modules/file-a.js'),
+           parser: require.resolve('babel-eslint')}),
     test({ options: unusedExportsOptions,
            code: 'export const b = 2',
            filename: testFilePath('./no-unused-modules/file-b.js'),
