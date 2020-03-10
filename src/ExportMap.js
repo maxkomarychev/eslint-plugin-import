@@ -6,7 +6,8 @@ import debug from 'debug'
 
 import { SourceCode } from 'eslint'
 
-import parse, { visit } from 'eslint-module-utils/parse'
+import parse from 'eslint-module-utils/parse'
+import { visit } from 'eslint-module-utils/visit'
 import resolve from 'eslint-module-utils/resolve'
 import isIgnored, { hasValidExtension } from 'eslint-module-utils/ignore'
 
