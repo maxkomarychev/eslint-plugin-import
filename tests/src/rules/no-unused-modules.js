@@ -747,29 +747,29 @@ typescriptRuleTester.run('no-unused-modules', rule, {
 //   })
 // })
 
-// describe('correctly work with Typescript only files', () => {
-//   typescriptRuleTester.run('no-unused-modules', rule, {
-//     valid: [
-//       test({
-//         options: unusedExportsTypescriptOptions,
-//         code: 'import a from "file-ts-a";',
-//         parser: require.resolve('babel-eslint'),
-//         filename: testFilePath('./no-unused-modules/typescript/file-ts-a.ts'),
-//       }),
-//     ],
-//     invalid: [
-//       test({
-//         options: unusedExportsTypescriptOptions,
-//         code: `export const b = 2;`,
-//         parser: require.resolve('babel-eslint'),
-//         filename: testFilePath('./no-unused-modules/typescript/file-ts-b.ts'),
-//         errors: [
-//           error(`exported declaration 'b' not used within other modules`),
-//         ],
-//       }),
-//     ],
-//   })
-// })
+describe('correctly work with Typescript only files', () => {
+  typescriptRuleTester.run('no-unused-modules', rule, {
+    valid: [
+      test({
+        options: unusedExportsTypescriptOptions,
+        code: 'import a from "file-ts-a";',
+        parser: require.resolve('babel-eslint'),
+        filename: testFilePath('./no-unused-modules/typescript/file-ts-a.ts'),
+      }),
+    ],
+    invalid: [
+      test({
+        options: unusedExportsTypescriptOptions,
+        code: `export const b = 2;`,
+        parser: require.resolve('babel-eslint'),
+        filename: testFilePath('./no-unused-modules/typescript/file-ts-b.ts'),
+        errors: [
+          error(`exported declaration 'b' not used within other modules`),
+        ],
+      }),
+    ],
+  })
+})
 
 describe('correctly work with JSX only files', () => {
   jsxRuleTester.run('no-unused-modules', rule, {
