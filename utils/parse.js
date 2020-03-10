@@ -15,29 +15,20 @@ function getBabelVisitorKeys(parserPath) {
   } else {
     return null
   }
-  // __visit(ast, keys, visitorSpec)
 }
 
 function keysFromParser(parserPath, parserInstance, parsedResult) {
-  // console.log(path)
   if (/.*estree.*/.test(parserPath)) {
-    // console.log('1')
     return parserInstance.VisitorKeys
   } else if (/.*babel-eslint.*/.test(parserPath)) {
-    // console.log('2')
     return getBabelVisitorKeys(parserPath)
   } else if (/.*@typescript-eslint\/parser/.test(parserPath)) {
-    // console.log('3')
     if (parsedResult) {
-      // console.log('4')
-      return  parsedResult.visitorKeys 
+      return parsedResult.visitorKeys 
     }
   }
-  // console.log('5')
   return null
 }
-
-
 
 exports.default = function parse(path, content, context) {
 
