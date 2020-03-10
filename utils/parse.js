@@ -7,8 +7,7 @@ const fs = require('fs')
 
 const log = require('debug')('eslint-plugin-import:parse')
 
-function getBabelVisitorKeys(path, context) {
-  const parserPath = getParserPath(path, context)
+function getBabelVisitorKeys(parserPath) {
   const hypotheticalLocation = parserPath.replace('index.js', 'visitor-keys.js')
   if (fs.existsSync(hypotheticalLocation)) {
     const keys = moduleRequire(parserPath.replace('index.js', 'visitor-keys.js'))
@@ -19,16 +18,15 @@ function getBabelVisitorKeys(path, context) {
   // __visit(ast, keys, visitorSpec)
 }
 
-function keysFromParser(pp, context, parserInstance, parsedResult) {
-  const path = getParserPath(pp, context)
+function keysFromParser(parserPath, parserInstance, parsedResult) {
   // console.log(path)
-  if (/.*estree.*/.test(path)) {
+  if (/.*estree.*/.test(parserPath)) {
     // console.log('1')
     return parserInstance.VisitorKeys
-  } else if (/.*babel-eslint.*/.test(path)) {
+  } else if (/.*babel-eslint.*/.test(parserPath)) {
     // console.log('2')
-    return getBabelVisitorKeys(path, context)
-  } else if (/.*@typescript-eslint\/parser/.test(path)) {
+    return getBabelVisitorKeys(parserPath)
+  } else if (/.*@typescript-eslint\/parser/.test(parserPath)) {
     // console.log('3')
     if (parsedResult) {
       // console.log('4')
@@ -109,11 +107,9 @@ exports.default = function parse(path, content, context) {
   delete parserOptions.project
   delete parserOptions.projects
   
-  let visitorKeys = null
   // require the parser relative to the main module (i.e., ESLint)
   const parser = moduleRequire(parserPath)
   // if parser is estree
-  visitorKeys = parser.VisitorKeys
   // console.log('parser', parserPath, Object.keys(parser))
   // console.log(JSON.stringify(parser))
 
@@ -123,11 +119,13 @@ exports.default = function parse(path, content, context) {
     try {
       const parserRaw = parser.parseForESLint(content, parserOptions)
       // if parser is @typescript-eslint/parser
-      visitorKeys = parserRaw.visitorKeys
       // console.log('parser output', Object.keys(parserRaw))
       // console.log(JSON.stringify(parserRaw))
       ast = parserRaw.ast
-      return { ast, visitorKeys: keysFromParser(path, context, parser, parserRaw)}
+      return {
+        ast,
+        visitorKeys: keysFromParser(parserPath, parser, parserRaw),
+      }
     } catch (e) {
       //
     }
@@ -139,13 +137,16 @@ exports.default = function parse(path, content, context) {
         path
       )
     } else {
-      return { ast, visitorKeys: keysFromParser(path, context, parser, undefined)}
+      return {
+        ast,
+        visitorKeys: keysFromParser(parserPath, parser, undefined),
+      }
     }
   }
 
   return {
     ast: parser.parse(content, parserOptions),
-    visitorKeys: keysFromParser(path, context, parser, undefined),
+    visitorKeys: keysFromParser(parserPath, parser, undefined),
   }
 }
 
