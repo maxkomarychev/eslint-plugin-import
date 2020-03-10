@@ -19,14 +19,23 @@ function getBabelVisitorKeys(path, context) {
   // __visit(ast, keys, visitorSpec)
 }
 
-function keysFromParser(path, context, parserInstance, parsedResult) {
+function keysFromParser(pp, context, parserInstance, parsedResult) {
+  const path = getParserPath(pp, context)
+  console.log(path)
   if (/.*estree.*/.test(path)) {
+    console.log('1')
     return parserInstance.VisitorKeys
   } else if (/.*babel-eslint.*/.test(path)) {
+    console.log('2')
     return getBabelVisitorKeys(path, context)
   } else if (/.*@typescript-eslint\/parser/.test(path)) {
-    return parsedResult ? parsedResult.visitorKeys : undefined
+    console.log('3')
+    if (parsedResult) {
+      console.log('4')
+      return  parsedResult.visitorKeys 
+    }
   }
+  console.log('5')
   return null
 }
 
@@ -60,7 +69,8 @@ function __visit(node, keys, visitorSpec) {
 exports.visit = function (ast, path, context, visitorSpec) {
   // const parserPath = getParserPath(path, context)
   // const keys = moduleRequire(parserPath.replace('index.js', 'visitor-keys.js'))
-  const keys = getBabelVisitorKeys(path, context)
+  // const keys = getBabelVisitorKeys(path, context)
+  const keys = keysFromParser(path, context, undefined, undefined)
   __visit(ast, keys, visitorSpec)
 }
 
