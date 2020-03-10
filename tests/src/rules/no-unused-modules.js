@@ -771,26 +771,26 @@ typescriptRuleTester.run('no-unused-modules', rule, {
 //   })
 // })
 
-// describe('correctly work with JSX only files', () => {
-//   jsxRuleTester.run('no-unused-modules', rule, {
-//     valid: [
-//       test({
-//         options: unusedExportsJsxOptions,
-//         code: 'import a from "file-jsx-a";',
-//         parser: require.resolve('babel-eslint'),
-//         filename: testFilePath('./no-unused-modules/jsx/file-jsx-a.jsx'),
-//       }),
-//     ],
-//     invalid: [
-//       test({
-//         options: unusedExportsJsxOptions,
-//         code: `export const b = 2;`,
-//         parser: require.resolve('babel-eslint'),
-//         filename: testFilePath('./no-unused-modules/jsx/file-jsx-b.jsx'),
-//         errors: [
-//           error(`exported declaration 'b' not used within other modules`),
-//         ],
-//       }),
-//     ],
-//   })
-// })
+describe('correctly work with JSX only files', () => {
+  jsxRuleTester.run('no-unused-modules', rule, {
+    valid: [
+      test({
+        options: unusedExportsJsxOptions,
+        code: 'import a from "file-jsx-a";',
+        parser: require.resolve('babel-eslint'),
+        filename: testFilePath('./no-unused-modules/jsx/file-jsx-a.jsx'),
+      }),
+    ],
+    invalid: [
+      test({
+        options: unusedExportsJsxOptions,
+        code: `export const b = 2;`,
+        parser: require.resolve('babel-eslint'),
+        filename: testFilePath('./no-unused-modules/jsx/file-jsx-b.jsx'),
+        errors: [
+          error(`exported declaration 'b' not used within other modules`),
+        ],
+      }),
+    ],
+  })
+})
