@@ -76,7 +76,9 @@ exports.default = function parse(path, content, context) {
         visitorKeys: keysFromParser(parserPath, parser, parserRaw),
       }
     } catch (e) {
-      //
+      console.warn()
+      console.warn('Error while parsing ' + parserOptions.filePath)
+      console.warn('Line ' + e.lineNumber + ', column ' + e.column + ': ' + e.message)
     }
     if (!ast || typeof ast !== 'object') {
       console.warn(
