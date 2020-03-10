@@ -66,11 +66,12 @@ function __visit(node, keys, visitorSpec) {
     }
 }
 
-exports.visit = function (ast, path, context, visitorSpec) {
+// exports.visit = function (ast, path, context, visitorSpec) {
+exports.visit = function (ast, keys, visitorSpec) {
   // const parserPath = getParserPath(path, context)
   // const keys = moduleRequire(parserPath.replace('index.js', 'visitor-keys.js'))
   // const keys = getBabelVisitorKeys(path, context)
-  const keys = keysFromParser(path, context, undefined, undefined)
+  // const keys = keysFromParser(path, context, undefined, undefined)
   __visit(ast, keys, visitorSpec)
 }
 
@@ -144,7 +145,7 @@ exports.default = function parse(path, content, context) {
 
   return {
     ast: parser.parse(content, parserOptions),
-    visitorKeys: getBabelVisitorKeys(path, context, parser, undefined),
+    visitorKeys: keysFromParser(path, context, parser, undefined),
   }
 }
 

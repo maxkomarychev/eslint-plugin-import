@@ -353,7 +353,7 @@ ExportMap.parse = function (path, content, context) {
 
   let hasDynamicImports = false
 
-  visit(ast, path, context, {
+  visit(ast, visitorKeys, {
     CallExpression(node) {
       if (node.callee.type === 'Import') {
         hasDynamicImports = true
