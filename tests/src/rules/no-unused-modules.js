@@ -736,16 +736,16 @@ typescriptRuleTester.run('no-unused-modules', rule, {
 //   })
 // })
 
-// describe('Avoid errors if re-export all from umd compiled library', () => {
-//   ruleTester.run('no-unused-modules', rule, {
-//     valid: [
-//       test({ options: unusedExportsOptions,
-//         code: `export * from '${testFilePath('./no-unused-modules/bin.js')}'`,
-//         filename: testFilePath('./no-unused-modules/main/index.js')}),
-//     ],
-//     invalid: [],
-//   })
-// })
+describe('Avoid errors if re-export all from umd compiled library', () => {
+  ruleTester.run('no-unused-modules', rule, {
+    valid: [
+      test({ options: unusedExportsOptions,
+        code: `export * from '${testFilePath('./no-unused-modules/bin.js')}'`,
+        filename: testFilePath('./no-unused-modules/main/index.js')}),
+    ],
+    invalid: [],
+  })
+})
 
 describe('correctly work with Typescript only files', () => {
   typescriptRuleTester.run('no-unused-modules', rule, {
