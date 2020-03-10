@@ -23,19 +23,19 @@ function keysFromParser(pp, context, parserInstance, parsedResult) {
   const path = getParserPath(pp, context)
   // console.log(path)
   if (/.*estree.*/.test(path)) {
-    console.log('1')
+    // console.log('1')
     return parserInstance.VisitorKeys
   } else if (/.*babel-eslint.*/.test(path)) {
-    console.log('2')
+    // console.log('2')
     return getBabelVisitorKeys(path, context)
   } else if (/.*@typescript-eslint\/parser/.test(path)) {
-    console.log('3')
+    // console.log('3')
     if (parsedResult) {
-      console.log('4')
+      // console.log('4')
       return  parsedResult.visitorKeys 
     }
   }
-  console.log('5')
+  // console.log('5')
   return null
 }
 

@@ -82,7 +82,6 @@ const isNodeModule = path => {
  */
 const resolveFiles = (src, ignoreExports, context) => {
   const extensions = Array.from(getFileExtensions(context.settings))
-  console.log('extensions', extensions)
 
   const srcFiles = new Set()
   const srcFileList = listFilesToProcess(src, extensions)
@@ -241,7 +240,6 @@ const doPreparation = (src, ignoreExports, context) => {
   filesOutsideSrc.clear()
 
   srcFiles = resolveFiles(getSrc(src), ignoreExports, context)
-  console.log('srcfiles', srcFiles)
   prepareImportsAndExports(srcFiles, context)
   determineUsage()
   lastPrepareKey = prepareKey
