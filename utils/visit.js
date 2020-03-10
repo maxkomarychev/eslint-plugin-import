@@ -1,7 +1,7 @@
 exports.__esModule = true
 
-exports.default = function __visit(node, keys, visitorSpec) {
-  if (!node) {
+exports.default = function visit(node, keys, visitorSpec) {
+  if (!node || !keys) {
     return
   }
     const type = node.type
@@ -16,10 +16,10 @@ exports.default = function __visit(node, keys, visitorSpec) {
       const field = node[fieldName]
       if (Array.isArray(field)) {
         for (const item of field) {
-          __visit(item, keys, visitorSpec)
+          visit(item, keys, visitorSpec)
         }
       } else {
-        __visit(field, keys, visitorSpec)
+        visit(field, keys, visitorSpec)
       }
     }
     if (typeof visitorSpec[`${type}:Exit`] === 'function') {
