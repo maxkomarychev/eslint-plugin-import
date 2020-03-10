@@ -21,7 +21,7 @@ function getBabelVisitorKeys(path, context) {
 
 function keysFromParser(pp, context, parserInstance, parsedResult) {
   const path = getParserPath(pp, context)
-  console.log(path)
+  // console.log(path)
   if (/.*estree.*/.test(path)) {
     console.log('1')
     return parserInstance.VisitorKeys

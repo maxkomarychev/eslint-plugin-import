@@ -174,38 +174,38 @@ const unusedExportsJsxOptions = [{
 // })
 
 // test for unused exports with `import()`
-ruleTester.run('no-unused-modules', rule, {
-  valid: [
-    test({ options: unusedExportsOptions,
-           code: `
-           export const a = 10
-           export const b = 20
-           export const c = 30
-           const d = 40
-           export default d
-           `,
-           parser: require.resolve('babel-eslint'),
-           filename: testFilePath('./no-unused-modules/exports-for-dynamic-js.js')}),
-  ],
-  invalid: [
-  ],
-})
-// typescriptRuleTester.run('no-unused-modules', rule, {
+// ruleTester.run('no-unused-modules', rule, {
 //   valid: [
 //     test({ options: unusedExportsOptions,
 //            code: `
-//            export const a= 10
+//            export const a = 10
 //            export const b = 20
 //            export const c = 30
 //            const d = 40
 //            export default d
 //            `,
-//            parser: require.resolve('@typescript-eslint/parser'),
-//            filename: testFilePath('./no-unused-modules/exports-for-dynamic-ts.ts')}),
+//            parser: require.resolve('babel-eslint'),
+//            filename: testFilePath('./no-unused-modules/exports-for-dynamic-js.js')}),
 //   ],
 //   invalid: [
 //   ],
 // })
+typescriptRuleTester.run('no-unused-modules', rule, {
+  valid: [
+    test({ options: unusedExportsTypescriptOptions,
+           code: `
+           export const a= 10
+           export const b = 20
+           export const c = 30
+           const d = 40
+           export default d
+           `,
+           parser: require.resolve('@typescript-eslint/parser'),
+           filename: testFilePath('./no-unused-modules/typescript/exports-for-dynamic-ts.ts')}),
+  ],
+  invalid: [
+  ],
+})
 
 // // // test for export from
 // ruleTester.run('no-unused-modules', rule, {
