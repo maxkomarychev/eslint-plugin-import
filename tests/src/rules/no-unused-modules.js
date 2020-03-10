@@ -73,8 +73,7 @@ ruleTester.run('no-unused-modules', rule, {
   valid: [
     test({ options: unusedExportsOptions,
            code: 'import { o2 } from "./file-o";export default () => 12',
-           filename: testFilePath('./no-unused-modules/file-a.js'),
-           parser: require.resolve('babel-eslint')}),
+           filename: testFilePath('./no-unused-modules/file-a.js')}),
     test({ options: unusedExportsOptions,
            code: 'export const b = 2',
            filename: testFilePath('./no-unused-modules/file-b.js'),
@@ -191,11 +190,11 @@ typescriptRuleTester.run('no-unused-modules', rule, {
   valid: [
     test({ options: unusedExportsTypescriptOptions,
            code: `
-           export const a= 10
-           export const b = 20
-           export const c = 30
-           const d = 40
-           export default d
+           export const ts_a = 10
+           export const ts_b = 20
+           export const ts_c = 30
+           const ts_d = 40
+           export default ts_d
            `,
            parser: require.resolve('@typescript-eslint/parser'),
            filename: testFilePath('./no-unused-modules/typescript/exports-for-dynamic-ts.ts')}),
