@@ -26,13 +26,3 @@ exports.default = function __visit(node, keys, visitorSpec) {
       visitorSpec[`${type}:Exit`](node)
     }
 }
-
-// exports.visit = function (ast, path, context, visitorSpec) {
-// exports.visit = __visit
-// // function (ast, keys, visitorSpec) {
-// //   // const parserPath = getParserPath(path, context)
-// //   // const keys = moduleRequire(parserPath.replace('index.js', 'visitor-keys.js'))
-// //   // const keys = getBabelVisitorKeys(path, context)
-// //   // const keys = keysFromParser(path, context, undefined, undefined)
-// //   __visit(ast, keys, visitorSpec)
-// // }
