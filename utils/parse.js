@@ -82,7 +82,7 @@ exports.default = function parse(path, content, context) {
       console.warn(
         '`parseForESLint` from parser `' +
           parserPath +
-        '` is invalid and will just be ignored',
+          '` is invalid and will just be ignored',
         path
       )
     } else {

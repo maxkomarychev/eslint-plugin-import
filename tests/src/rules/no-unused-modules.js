@@ -124,14 +124,11 @@ ruleTester.run('no-unused-modules', rule, {
              error(`exported declaration 'o0' not used within other modules`),
              error(`exported declaration 'o3' not used within other modules`),
              error(`exported declaration 'p' not used within other modules`),
-           ],
-    }),
+           ]}),
     test({ options: unusedExportsOptions,
            code: `const n0 = 'n0'; const n1 = 42; export { n0, n1 }; export default () => {}`,
            filename: testFilePath('./no-unused-modules/file-n.js'),
-           errors: [
-             error(`exported declaration 'default' not used within other modules`),
-           ]}),
+           errors: [error(`exported declaration 'default' not used within other modules`)]}),
   ],
 })
 
