@@ -8,15 +8,22 @@ This change log adheres to standards from [Keep a CHANGELOG](http://keepachangel
 ### Added
 - [`no-unused-modules`]: consider exported TypeScript interfaces, types and enums ([#1819], thanks [@nicolashenry])
 - [`no-unused-modules`]: support dynamic imports ([#1660], thanks [@maxkomarychev])
+- [`no-cycle`]: allow `maxDepth` option to be `"∞"` (thanks [@ljharb])
 
 ### Fixed
 - [`order`]/TypeScript: properly support `import = object` expressions ([#1823], thanks [@manuth])
 - [`no-extraneous-dependencies`]/TypeScript: do not error when importing type from dev dependencies ([#1820], thanks [@fernandopasik])
 - [`default`]: avoid crash with `export =` ([#1822], thanks [@AndrewLeedham])
 - [`order`]/[`newline-after-import`]: ignore TypeScript's "export import object" ([#1830], thanks [@be5invis])
+- [`dynamic-import-chunkname`]/TypeScript: supports `@typescript-eslint/parser` ([#1833], thanks [@noelebrun])
+- [`order`]/TypeScript: ignore ordering of object imports ([#1831], thanks [@manuth])
+- [`namespace`]: do not report on shadowed import names ([#518], thanks [@ljharb])
+- [`export`]: avoid warning on `export * as` non-conflicts ([#1834], thanks [@ljharb])
 
 ### Changed
 - [`no-extraneous-dependencies`]: add tests for importing types ([#1824], thanks [@taye])
+- [docs] [`no-default-export`]: Fix docs url ([#1836], thanks [@beatrizrezener])
+- [docs] [`imports-first`]: deprecation info and link to `first` docs ([#1835], thanks [@beatrizrezener])
 
 ## [2.21.2] - 2020-06-09
 ### Fixed
@@ -715,6 +722,11 @@ for info on changes for earlier releases.
 
 [`memo-parser`]: ./memo-parser/README.md
 
+[#1836]: https://github.com/benmosher/eslint-plugin-import/pull/1836
+[#1835]: https://github.com/benmosher/eslint-plugin-import/pull/1835
+[#1834]: https://github.com/benmosher/eslint-plugin-import/issues/1834
+[#1833]: https://github.com/benmosher/eslint-plugin-import/pull/1833
+[#1831]: https://github.com/benmosher/eslint-plugin-import/pull/1831
 [#1830]: https://github.com/benmosher/eslint-plugin-import/pull/1830
 [#1824]: https://github.com/benmosher/eslint-plugin-import/pull/1824
 [#1823]: https://github.com/benmosher/eslint-plugin-import/pull/1823
@@ -880,6 +892,7 @@ for info on changes for earlier releases.
 [#555]: https://github.com/benmosher/eslint-plugin-import/pull/555
 [#538]: https://github.com/benmosher/eslint-plugin-import/pull/538
 [#527]: https://github.com/benmosher/eslint-plugin-import/pull/527
+[#518]: https://github.com/benmosher/eslint-plugin-import/pull/518
 [#509]: https://github.com/benmosher/eslint-plugin-import/pull/509
 [#508]: https://github.com/benmosher/eslint-plugin-import/pull/508
 [#503]: https://github.com/benmosher/eslint-plugin-import/pull/503
@@ -1240,3 +1253,5 @@ for info on changes for earlier releases.
 [@taye]: https://github.com/taye
 [@AndrewLeedham]: https://github.com/AndrewLeedham
 [@be5invis]: https://github.com/be5invis
+[@noelebrun]: https://github.com/noelebrun
+[@beatrizrezener]: https://github.com/beatrizrezener
